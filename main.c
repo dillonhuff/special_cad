@@ -14,8 +14,15 @@ int main() {
   lp_polynomial_context_t* ctx =
     lp_polynomial_context_new(lp_Z, var_db, var_order);
   
-  printf("Printing\n");
+  printf("Printing a number\n");
+
+  lp_integer_t it;
+  lp_integer_construct_from_int(lp_Z, &it, 23);
+
+  lp_integer_print(&it, stdout);
+  printf("\n");
 
   lp_polynomial_context_detach(ctx);
   lp_variable_db_detach(var_db);
+  lp_variable_order_detach(var_order);
 }
