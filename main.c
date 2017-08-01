@@ -6,6 +6,7 @@
 #include <poly/variable_order.h>
 #include <poly/variable_db.h>
 #include <poly/polynomial_context.h>
+#include <poly/upolynomial.h>
 #include <poly/poly.h>
 
 int main() {
@@ -33,42 +34,51 @@ int main() {
   printf("\n");
 
   // Build up polynomial 23u^2 + u from monomials
-  lp_polynomial_t* x2 = lp_polynomial_new(ctx);
-  lp_polynomial_construct_simple(x2, ctx, &it, u, 2);
+  /* lp_polynomial_t* x2 = lp_polynomial_new(ctx); */
+  /* lp_polynomial_construct_simple(x2, ctx, &it, u, 2); */
 
-  lp_polynomial_print(x2, stdout);
-  printf("\n");
+  /* lp_polynomial_print(x2, stdout); */
+  /* printf("\n"); */
   
-  lp_polynomial_t* x = lp_polynomial_new(ctx);
-  lp_polynomial_construct_simple(x, ctx, &one, u, 1);
+  /* lp_polynomial_t* x = lp_polynomial_new(ctx); */
+  /* lp_polynomial_construct_simple(x, ctx, &one, u, 1); */
 
-  lp_polynomial_print(x, stdout);
-  printf("\n");
+  /* lp_polynomial_print(x, stdout); */
+  /* printf("\n"); */
   
-  lp_polynomial_t* poly = lp_polynomial_new(ctx);
-  lp_polynomial_add(poly, x2, x);
+  /* lp_polynomial_t* poly = lp_polynomial_new(ctx); */
+  /* lp_polynomial_add(poly, x2, x); */
 
-  lp_polynomial_print(poly, stdout);
-  printf("\n");
+  /* lp_polynomial_print(poly, stdout); */
+  /* printf("\n"); */
 
-  size_t deg = lp_polynomial_degree(poly);
+  lp_upolynomial_t* x2 = lp_upolynomial_construct_power(lp_Z, 23, 2);
+  lp_upolynomial_t* x = lp_upolynomial_construct_power(lp_Z, 1, 1);
+
+  lp_upolynomial_t* poly = lp_upolynomial_add(x2, x);
+  size_t deg = lp_upolynomial_degree(poly);
 
   printf("Degree of poly = %zu\n", deg);
 
   // Isolate roots
   lp_assignment_t* assignment = lp_assignment_new(var_db);
 
-  void* data = malloc(sizeof(lp_rational_t)*deg);
-  lp_value_t* roots = lp_value_new(LP_VALUE_RATIONAL, data);
+  /* void* data = malloc(sizeof(lp_rational_t)*deg); */
+  /* lp_value_t* roots = lp_value_new(LP_VALUE_RATIONAL, data); */
+
+  lp_algebraic_number_t* roots =
+    (lp_algebraic_number_t*)(malloc(sizeof(lp_algebraic_number_t)*deg));
 
   size_t roots_size;
-  lp_polynomial_roots_isolate(poly, assignment, roots, &roots_size);
+  //lp_polynomial_roots_isolate(poly, assignment, roots, &roots_size);
+  lp_upolynomial_roots_isolate(poly, roots, &roots_size);
 
   printf("# of roots of poly = %zu\n", roots_size);
 
   for (size_t i = 0; i < roots_size; i++) {
-    printf("root type = %d\n", roots[i].type);
-    printf("root approximation = %f\n", lp_value_to_double(&(roots[i])));
+    printf("ROOT\n");
+    //printf("root type = %d\n", roots[i].type);
+    //printf("root approximation = %f\n", lp_value_to_double(&(roots[i])));
   }
 
   // Cleanup
