@@ -77,6 +77,7 @@ int main() {
 
   for (size_t i = 0; i < roots_size; i++) {
     printf("ROOT\n");
+    lp_algebraic_number_print(&(roots[i]), stdout);
     //printf("root type = %d\n", roots[i].type);
     //printf("root approximation = %f\n", lp_value_to_double(&(roots[i])));
   }
