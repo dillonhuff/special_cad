@@ -52,13 +52,16 @@ int main() {
   /* lp_polynomial_print(poly, stdout); */
   /* printf("\n"); */
 
-  lp_upolynomial_t* x2 = lp_upolynomial_construct_power(lp_Z, 23, 2);
+  lp_upolynomial_t* x2 = lp_upolynomial_construct_power(lp_Z, 2, 23);
   lp_upolynomial_t* x = lp_upolynomial_construct_power(lp_Z, 1, 1);
 
   lp_upolynomial_t* poly = lp_upolynomial_add(x2, x);
   size_t deg = lp_upolynomial_degree(poly);
 
   printf("Degree of poly = %zu\n", deg);
+
+  lp_upolynomial_print(poly, stdout);
+  printf("\n");
 
   // Isolate roots
   lp_assignment_t* assignment = lp_assignment_new(var_db);
@@ -76,8 +79,9 @@ int main() {
   printf("# of roots of poly = %zu\n", roots_size);
 
   for (size_t i = 0; i < roots_size; i++) {
-    printf("ROOT\n");
+    printf("ROOT = ");
     lp_algebraic_number_print(&(roots[i]), stdout);
+    printf("\n");
     //printf("root type = %d\n", roots[i].type);
     //printf("root approximation = %f\n", lp_value_to_double(&(roots[i])));
   }
