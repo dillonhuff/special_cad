@@ -32,6 +32,7 @@ int main() {
   lp_integer_print(&it, stdout);
   printf("\n");
 
+  // Build up polynomial 23u^2 + u from monomials
   lp_polynomial_t* x2 = lp_polynomial_new(ctx);
   lp_polynomial_construct_simple(x2, ctx, &it, u, 2);
 
@@ -54,10 +55,11 @@ int main() {
 
   printf("Degree of poly = %zu\n", deg);
 
+  // Isolate roots
   lp_assignment_t* assignment = lp_assignment_new(var_db);
 
-  void* data = malloc(sizeof(lp_algebraic_number_t)*deg);
-  lp_value_t* roots = lp_value_new(LP_VALUE_ALGEBRAIC, data);
+  void* data = malloc(sizeof(lp_rational_t)*deg);
+  lp_value_t* roots = lp_value_new(LP_VALUE_RATIONAL, data);
 
   size_t roots_size;
   lp_polynomial_roots_isolate(poly, assignment, roots, &roots_size);
