@@ -43,7 +43,14 @@ int main() {
 
   printf("# of roots of poly = %zu\n", roots_size);
 
+  for (size_t i = 0; i < roots_size; i++) {
+    printf("root type = %d\n", roots[i].type);
+    lp_algebraic_number_print(, stdout);
+  }
+
   // Cleanup
+  
+  lp_assignment_delete(assignment);
   lp_polynomial_context_detach(ctx);
   lp_variable_db_detach(var_db);
   lp_variable_order_detach(var_order);
