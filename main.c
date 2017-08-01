@@ -10,7 +10,13 @@
 
 int main() {
   lp_variable_db_t* var_db = lp_variable_db_new();
+
+  // Create variables
+  lp_variable_t u = lp_variable_db_new_variable(var_db, "u");  
+
+  // Create variable order
   lp_variable_order_t* var_order = lp_variable_order_new();
+  lp_variable_order_push(var_order, u);
 
   lp_polynomial_context_t* ctx =
     lp_polynomial_context_new(lp_Z, var_db, var_order);
@@ -20,11 +26,26 @@ int main() {
   lp_integer_t it;
   lp_integer_construct_from_int(lp_Z, &it, 23);
 
+  lp_integer_t one;
+  lp_integer_construct_from_int(lp_Z, &one, 1);
+  
   lp_integer_print(&it, stdout);
   printf("\n");
 
+  lp_polynomial_t* x2 = lp_polynomial_new(ctx);
+  lp_polynomial_construct_simple(x2, ctx, &it, u, 2);
+
+  lp_polynomial_print(x2, stdout);
+  printf("\n");
+  
+  lp_polynomial_t* x = lp_polynomial_new(ctx);
+  lp_polynomial_construct_simple(x, ctx, &one, u, 1);
+
+  lp_polynomial_print(x, stdout);
+  printf("\n");
+  
   lp_polynomial_t* poly = lp_polynomial_new(ctx);
-  lp_polynomial_construct_simple(poly, ctx, &it, 1, 2);
+  lp_polynomial_add(poly, x2, x);
 
   lp_polynomial_print(poly, stdout);
   printf("\n");
@@ -45,7 +66,7 @@ int main() {
 
   for (size_t i = 0; i < roots_size; i++) {
     printf("root type = %d\n", roots[i].type);
-    lp_algebraic_number_print(, stdout);
+    printf("root approximation = %f\n", lp_value_to_double(&(roots[i])));
   }
 
   // Cleanup
