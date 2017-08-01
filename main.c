@@ -1,11 +1,10 @@
 #include <stdio.h>
 
+#include <poly/polynomial.h>
 #include <poly/variable_order.h>
 #include <poly/variable_db.h>
 #include <poly/polynomial_context.h>
 #include <poly/poly.h>
-
-
 
 int main() {
   lp_variable_db_t* var_db = lp_variable_db_new();
@@ -20,6 +19,12 @@ int main() {
   lp_integer_construct_from_int(lp_Z, &it, 23);
 
   lp_integer_print(&it, stdout);
+  printf("\n");
+
+  lp_polynomial_t* poly = lp_polynomial_new(ctx);
+  lp_polynomial_construct_simple(poly, ctx, &it, 1, 1);
+
+  lp_polynomial_print(poly, stdout);
   printf("\n");
 
   lp_polynomial_context_detach(ctx);
