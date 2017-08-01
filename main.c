@@ -9,7 +9,7 @@
 #include <poly/upolynomial.h>
 #include <poly/poly.h>
 
-int main() {
+void isolate_univariate_roots() {
   lp_variable_db_t* var_db = lp_variable_db_new();
 
   // Create variables
@@ -93,5 +93,9 @@ int main() {
   lp_variable_db_detach(var_db);
   lp_variable_order_detach(var_order);
 
+}
+
+int main() {
+  isolate_univariate_roots();
 
 }
