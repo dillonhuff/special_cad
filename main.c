@@ -375,6 +375,32 @@ pl_list all_discriminants(lp_polynomial_t* const * const ps,
   return p;
 }
 
+pl_list all_pairwise_resultants(size_t* num_resultants,
+				lp_polynomial_t* const * const ps,
+				const size_t ps_len) {
+  *num_resultants = (ps_len*(ps_len - 1)) / 2;
+
+  pl_list resultants = poly_ptr_list(*num_resultants);
+
+  size_t total_res = 0;
+  for (size_t i = 0; i < ps_len; i++) {
+    pl f = ps[i];
+
+    for (size_t j = i + 1; j < ps_len; j++) {
+      pl g = ps[j];
+
+      pl res = pl_new(lp_polynomial_get_context(g));
+      lp_polynomial_resultant(res, f, g);
+      resultants[total_res] = res;
+      total_res++;
+    }
+  }
+
+  assert(total_res == *num_resultants);
+
+  return resultants;
+}
+
 pl_list mccallum_projection(size_t* projection_set_size,
 			    lp_polynomial_t* const * const ps,
 			    const size_t ps_len) {
@@ -419,6 +445,31 @@ pl_list mccallum_projection(size_t* projection_set_size,
   free(discs);
 
   // Add resultants
+
+  size_t num_resultants = 0;
+  pl_list resultants = all_pairwise_resultants(&num_resultants, ps, ps_len);
+
+  printf("num_resultants = %zu\n", num_resultants);
+  
+  non_constant_coeffs =
+    (pl_list)(realloc(non_constant_coeffs, sizeof(pl)*(*projection_set_size + num_resultants)));
+
+  for (size_t i = 0; i < num_resultants; i++) {
+
+    printf("resultant %zu = ", i);
+    print_poly(resultants[i]);
+    printf("\n");
+    
+    if (!lp_polynomial_is_constant(resultants[i])) {
+      non_constant_coeffs[*projection_set_size] = resultants[i];
+      *projection_set_size += 1;
+    }
+  }
+
+  non_constant_coeffs =
+    (pl_list)(realloc(non_constant_coeffs, sizeof(pl)*(*projection_set_size)));
+
+  free(resultants);
 
   return non_constant_coeffs;
 }
@@ -489,12 +540,18 @@ void test_all_discriminants() {
   size_t proj1_size = 0;
   pl_list mc_proj1 = mccallum_projection(&proj1_size, &p, 1);
 
+  assert(proj1_size == 2);
+
   printf("McCallum projections\n");
   print_poly_list(mc_proj1, proj1_size);
-  
 
-  size_t coeffs_size;
-  pl_list coeffs = all_coefficients(&coeffs_size, &p, 1);
+  size_t proj2_size = 0;
+  pl_list mc_proj2 = mccallum_projection(&proj2_size, mc_proj1, proj1_size);
+
+  printf("McCallum projection 2\n");
+  print_poly_list(mc_proj2, proj2_size);
+  /* size_t coeffs_size; */
+  /* pl_list coeffs = all_coefficients(&coeffs_size, &p, 1); */
 
   /* printf("Coefficients\n"); */
   /* print_poly_list(coeffs, coeffs_size); */
