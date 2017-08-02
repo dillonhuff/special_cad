@@ -366,6 +366,38 @@ void test_all_discriminants() {
 
   lp_polynomial_print(x1m2sq, stdout);
   printf("\n");
+
+  pl x2m2sq = lp_polynomial_new(ctx);
+  lp_polynomial_construct_simple(x2m2sq, ctx, &one, x2, 1);
+
+  lp_polynomial_sub(x2m2sq, x2m2sq, twop);
+  lp_polynomial_mul(x2m2sq, x2m2sq, x2m2sq);
+
+  lp_polynomial_print(x2m2sq, stdout);
+  printf("\n");
+
+  pl x3m2sq = lp_polynomial_new(ctx);
+  lp_polynomial_construct_simple(x3m2sq, ctx, &one, x3, 1);
+
+  lp_polynomial_sub(x3m2sq, x3m2sq, twop);
+  lp_polynomial_mul(x3m2sq, x3m2sq, x3m2sq);
+
+  lp_polynomial_print(x3m2sq, stdout);
+  printf("\n");
+
+  pl onep = lp_polynomial_new(ctx);
+  lp_polynomial_construct_simple(onep, ctx, &one, x1, 0);
+  
+  pl p = lp_polynomial_new(ctx);
+  lp_polynomial_add(p, p, x1m2sq);
+  lp_polynomial_add(p, p, x2m2sq);
+  lp_polynomial_add(p, p, x3m2sq);
+  lp_polynomial_sub(p, p, onep);
+
+  lp_polynomial_print(p, stdout);
+  printf("\n");
+  
+  
 }
 
 int main() {
