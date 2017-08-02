@@ -10,6 +10,10 @@
 #include <poly/upolynomial.h>
 #include <poly/poly.h>
 
+typedef lp_polynomial_t* pl;
+typedef lp_polynomial_t** pl_list;
+typedef lp_integer_t lpint;
+
 lp_polynomial_t** poly_ptr_list(const size_t len) {
   return (lp_polynomial_t**)(malloc(sizeof(lp_polynomial_t*)*len));
 }
@@ -218,6 +222,13 @@ void isolate_univariate_roots() {
 
 }
 
+lp_integer_t mk_int(size_t i) {
+  lp_integer_t it;
+  lp_integer_construct_from_int(lp_Z, &it, i);
+
+  return it;
+}
+
 void test_all_coefficients() {
   lp_variable_db_t* var_db = lp_variable_db_new();
 
@@ -312,6 +323,7 @@ void test_all_coefficients() {
   lp_polynomial_t** coeffs2 =
     all_coefficients(&coeffs_len2, coeffs, coeffs_len);
 
+  printf("Coefficients 2\n");
   for (size_t i = 0; i < coeffs_len2; i++) {
     lp_polynomial_print(coeffs2[i], stdout);
     printf("\n");
@@ -322,8 +334,43 @@ void test_all_coefficients() {
   
 }
 
+void test_all_discriminants() {
+  lpint two = mk_int(2);
+  lpint one = mk_int(1);
+
+  lp_variable_db_t* var_db = lp_variable_db_new();
+
+  // Create variables
+  lp_variable_t x1 = lp_variable_db_new_variable(var_db, "x1");
+  lp_variable_t x2 = lp_variable_db_new_variable(var_db, "x2");
+  lp_variable_t x3 = lp_variable_db_new_variable(var_db, "x3");
+
+  // Create variable order
+  lp_variable_order_t* var_order = lp_variable_order_new();
+  lp_variable_order_push(var_order, x1);  
+  lp_variable_order_push(var_order, x2);
+  lp_variable_order_push(var_order, x3);
+
+
+  lp_polynomial_context_t* ctx =
+    lp_polynomial_context_new(lp_Z, var_db, var_order);
+  
+  pl x1m2sq = lp_polynomial_new(ctx);
+  lp_polynomial_construct_simple(x1m2sq, ctx, &one, x1, 1);
+
+  pl twop = lp_polynomial_new(ctx);
+  lp_polynomial_construct_simple(twop, ctx, &two, x1, 0);
+
+  lp_polynomial_sub(x1m2sq, x1m2sq, twop);
+  lp_polynomial_mul(x1m2sq, x1m2sq, x1m2sq);
+
+  lp_polynomial_print(x1m2sq, stdout);
+  printf("\n");
+}
+
 int main() {
   test_all_coefficients();
+  test_all_discriminants();
   //isolate_multivariate_roots();
 
 }
