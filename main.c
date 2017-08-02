@@ -359,6 +359,29 @@ void discriminant(lp_polynomial_t* disc, lp_polynomial_t* p) {
   lp_polynomial_resultant(disc, p, deriv);
 }
 
+pl_list mccallum_projection(size_t* projection_set_size,
+			    lp_polynomial_t* const * const ps,
+			    const size_t ps_len) {
+  size_t num_coeffs;
+  pl_list coeffs = all_coefficients(&num_coeffs, ps, ps_len);
+
+  *projection_set_size = 0;
+  pl_list non_constant_coeffs = poly_ptr_list(num_coeffs);
+  for (size_t i = 0; i < num_coeffs; i++) {
+
+    if (!lp_polynomial_is_constant(coeffs[i])) {
+
+      non_constant_coeffs[*projection_set_size] = coeffs[i];
+      *projection_set_size += 1;
+      
+    }
+  }
+
+  non_constant_coeffs =
+    (pl_list)(realloc(non_constant_coeffs, sizeof(pl)*(*projection_set_size)));
+  return non_constant_coeffs;
+}
+
 void test_all_discriminants() {
   lpint two = mk_int(2);
   lpint one = mk_int(1);
@@ -422,19 +445,26 @@ void test_all_discriminants() {
   lp_polynomial_print(p, stdout);
   printf("\n");
 
+  size_t proj1_size = 0;
+  pl_list mc_proj1 = mccallum_projection(&proj1_size, &p, 1);
+
+  printf("McCallum projections\n");
+  print_poly_list(mc_proj1, proj1_size);
+  
+
   size_t coeffs_size;
   pl_list coeffs = all_coefficients(&coeffs_size, &p, 1);
 
-  printf("Coefficients\n");
-  print_poly_list(coeffs, coeffs_size);
+  /* printf("Coefficients\n"); */
+  /* print_poly_list(coeffs, coeffs_size); */
 
-  pl disc = pl_new(ctx);
+  /* pl disc = pl_new(ctx); */
 
-  discriminant(disc, p);
+  /* discriminant(disc, p); */
 
-  printf("Discriminant = ");
-  print_poly(disc);
-  printf("\n");
+  /* printf("Discriminant = "); */
+  /* print_poly(disc); */
+  /* printf("\n"); */
 
 }
 
