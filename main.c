@@ -245,6 +245,7 @@ lp_value_t* all_sorted_roots(size_t* num_roots_ptr,
 
     roots = (lp_value_t*)(realloc(roots, sizeof(lp_value_t)*(*num_roots_ptr)));
   }
+
   return roots;
 }
 
