@@ -16,10 +16,13 @@ void isolate_multivariate_roots() {
 
   // Create variables
   lp_variable_t u = lp_variable_db_new_variable(var_db, "u");
+  lp_variable_t v = lp_variable_db_new_variable(var_db, "v");
 
   // Create variable order
   lp_variable_order_t* var_order = lp_variable_order_new();
+  lp_variable_order_push(var_order, v);  
   lp_variable_order_push(var_order, u);
+
 
   lp_polynomial_context_t* ctx =
     lp_polynomial_context_new(lp_Z, var_db, var_order);
@@ -42,28 +45,42 @@ void isolate_multivariate_roots() {
   lp_polynomial_print(x2, stdout);
   printf("\n");
   
+  lp_polynomial_t* v2 = lp_polynomial_new(ctx);
+  lp_polynomial_construct_simple(v2, ctx, &one, v, 2);
+
+  lp_polynomial_print(v2, stdout);
+  printf("\n");
+  
+  
   lp_polynomial_t* x = lp_polynomial_new(ctx);
   lp_polynomial_construct_simple(x, ctx, &one, u, 1);
 
   lp_polynomial_print(x, stdout);
   printf("\n");
 
+  lp_polynomial_t* poly1 = lp_polynomial_new(ctx);
+  lp_polynomial_add(poly1, x2, x);
+
   lp_polynomial_t* poly = lp_polynomial_new(ctx);
-  lp_polynomial_add(poly, x2, x);
+  lp_polynomial_mul(poly, poly1, v2);
 
   lp_polynomial_print(poly, stdout);
   printf("\n");
 
-  // Isolate roots
+  // Create assignment
   lp_assignment_t* assignment = lp_assignment_new(var_db);
+  lp_value_t* v_value = lp_value_new(LP_VALUE_INTEGER, &one);
+  lp_assignment_set_value(assignment, v, v_value);
 
+  // Isolate roots
   size_t deg = lp_polynomial_degree(poly);
   lp_value_t* roots = malloc(sizeof(lp_value_t)*deg);
 
   if (!lp_polynomial_is_univariate_m(poly, assignment)) {
     printf("ERROR: ");
     lp_polynomial_print(poly, stdout);
-    printf(" is not univariate under the given assignment");
+    printf(" is not univariate under the given assignment\n");
+    assert(0);
   }
 
   size_t roots_size = 0;
