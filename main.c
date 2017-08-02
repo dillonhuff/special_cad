@@ -435,6 +435,7 @@ void test_all_discriminants() {
   printf("Discriminant = ");
   print_poly(disc);
   printf("\n");
+
 }
 
 int main() {
