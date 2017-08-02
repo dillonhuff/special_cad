@@ -34,10 +34,14 @@ void isolate_multivariate_roots() {
 
   lp_integer_t one;
   lp_integer_construct_from_int(lp_Z, &one, 1);
-  
+
   lp_integer_print(&it, stdout);
   printf("\n");
 
+  lp_integer_t twelve;
+  lp_integer_construct_from_int(lp_Z, &twelve, 12);
+  
+  
   // Build up polynomial 23u^2 + u from monomials
   lp_polynomial_t* x2 = lp_polynomial_new(ctx);
   lp_polynomial_construct_simple(x2, ctx, &it, u, 2);
@@ -50,7 +54,6 @@ void isolate_multivariate_roots() {
 
   lp_polynomial_print(v2, stdout);
   printf("\n");
-  
   
   lp_polynomial_t* x = lp_polynomial_new(ctx);
   lp_polynomial_construct_simple(x, ctx, &one, u, 1);
@@ -65,6 +68,28 @@ void isolate_multivariate_roots() {
   lp_polynomial_mul(poly, poly1, v2);
 
   lp_polynomial_print(poly, stdout);
+  printf("\n");
+
+  // Create resultant of 2 polynomials
+  lp_polynomial_t* r = lp_polynomial_new(ctx);
+  lp_polynomial_construct_simple(r, ctx, &twelve, u, 3);
+
+  lp_polynomial_t* s = lp_polynomial_new(ctx);
+  lp_polynomial_construct_simple(s, ctx, &one, u, 0);
+
+  lp_polynomial_t* sr = lp_polynomial_new(ctx);
+
+  lp_polynomial_add(sr, r, s);
+
+  printf("sr = ");
+  lp_polynomial_print(sr, stdout);
+  printf("\n");
+  
+  lp_polynomial_t* res = lp_polynomial_new(ctx);
+  lp_polynomial_resultant(res, poly, sr);
+
+  printf("Resultant = ");
+  lp_polynomial_print(res, stdout);
   printf("\n");
 
   // Create assignment
