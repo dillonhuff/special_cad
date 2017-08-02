@@ -10,6 +10,10 @@
 #include <poly/upolynomial.h>
 #include <poly/poly.h>
 
+lp_polynomial_t** poly_ptr_list(const size_t len) {
+  return (lp_polynomial_t**)(malloc(sizeof(lp_polynomial_t*)*len));
+}
+
 void coefficients(lp_polynomial_t** coefficients,
 		  const lp_polynomial_t* p) {
   for (size_t k = 0; k <= lp_polynomial_degree(p); k++) {
@@ -17,6 +21,24 @@ void coefficients(lp_polynomial_t** coefficients,
     lp_polynomial_get_coefficient(coefficients[k], p, k);
   }
 
+}
+
+size_t total_degree(lp_polynomial_t * const * const p,
+		    const size_t num_polys) {
+  size_t td = 0;
+
+  for (size_t i = 0; i < num_polys; i++) {
+    td += lp_polynomial_degree(p[i]) + 1;
+  }
+
+  return td;
+}
+
+void all_coefficients(lp_polynomial_t** coefficients,
+		      size_t* total_num_coefficients,
+		      lp_polynomial_t * const * const p,
+		      const size_t num_polys) {
+  *total_num_coefficients = total_degree(p, num_polys);
 }
 
 void print_coefficients(const lp_polynomial_t* p) {
@@ -190,7 +212,95 @@ void isolate_univariate_roots() {
 
 }
 
+void test_all_coefficients() {
+  lp_variable_db_t* var_db = lp_variable_db_new();
+
+  // Create variables
+  lp_variable_t u = lp_variable_db_new_variable(var_db, "u");
+  lp_variable_t v = lp_variable_db_new_variable(var_db, "v");
+
+  // Create variable order
+  lp_variable_order_t* var_order = lp_variable_order_new();
+  lp_variable_order_push(var_order, v);  
+  lp_variable_order_push(var_order, u);
+
+
+  lp_polynomial_context_t* ctx =
+    lp_polynomial_context_new(lp_Z, var_db, var_order);
+  
+  printf("Printing a number\n");
+
+  lp_integer_t it;
+  lp_integer_construct_from_int(lp_Z, &it, 23);
+
+  lp_integer_t one;
+  lp_integer_construct_from_int(lp_Z, &one, 1);
+
+  lp_integer_t twelve;
+  lp_integer_construct_from_int(lp_Z, &twelve, 12);
+  
+  
+  // Build up polynomial 23u^2 + u from monomials
+  lp_polynomial_t* x2 = lp_polynomial_new(ctx);
+  lp_polynomial_construct_simple(x2, ctx, &it, u, 2);
+
+  //lp_polynomial_print(x2, stdout);
+  //printf("\n");
+  
+  lp_polynomial_t* v2 = lp_polynomial_new(ctx);
+  lp_polynomial_construct_simple(v2, ctx, &one, v, 2);
+
+  //lp_polynomial_print(v2, stdout);
+  //printf("\n");
+  
+  lp_polynomial_t* x = lp_polynomial_new(ctx);
+  lp_polynomial_construct_simple(x, ctx, &one, u, 1);
+
+  //lp_polynomial_print(x, stdout);
+  //printf("\n");
+
+  lp_polynomial_t* poly1 = lp_polynomial_new(ctx);
+  lp_polynomial_add(poly1, x2, x);
+
+  lp_polynomial_t* poly = lp_polynomial_new(ctx);
+  lp_polynomial_mul(poly, poly1, v2);
+
+  //lp_polynomial_print(poly, stdout);
+  //printf("\n");
+
+  // Create resultant of 2 polynomials
+  lp_polynomial_t* r = lp_polynomial_new(ctx);
+  lp_polynomial_construct_simple(r, ctx, &twelve, u, 3);
+
+  lp_polynomial_t* s = lp_polynomial_new(ctx);
+  lp_polynomial_construct_simple(s, ctx, &one, u, 0);
+
+  lp_polynomial_t* sr = lp_polynomial_new(ctx);
+
+  lp_polynomial_add(sr, r, s);
+
+  lp_polynomial_t** poly_ptrs =
+    poly_ptr_list(2);
+  poly_ptrs[0] = sr;
+  poly_ptrs[1] = poly;
+
+  lp_polynomial_t** coeffs;
+  size_t coeffs_len;
+  all_coefficients(coeffs, &coeffs_len, poly_ptrs, 2);
+
+  lp_polynomial_print(sr, stdout);
+  printf("\n");
+  lp_polynomial_print(poly, stdout);
+  printf("\n");
+  printf("# coeffs = %zu\n", coeffs_len);
+
+  assert(coeffs_len == 7);
+  
+  free(coeffs);
+}
+
 int main() {
-  isolate_multivariate_roots();
+  test_all_coefficients();
+  //isolate_multivariate_roots();
 
 }
