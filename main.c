@@ -359,9 +359,27 @@ void discriminant(lp_polynomial_t* disc, lp_polynomial_t* p) {
   lp_polynomial_resultant(disc, p, deriv);
 }
 
+// Returns an array of length ps_len.
+pl_list all_discriminants(lp_polynomial_t* const * const ps,
+			  const size_t ps_len) {
+  pl_list p = poly_ptr_list(ps_len);
+
+  for (size_t i = 0; i < ps_len; i++) {
+    pl disc = pl_new(lp_polynomial_get_context(ps[i]));
+
+    discriminant(disc, ps[i]);
+    
+    p[i] = disc;
+  }
+  
+  return p;
+}
+
 pl_list mccallum_projection(size_t* projection_set_size,
 			    lp_polynomial_t* const * const ps,
 			    const size_t ps_len) {
+
+  // Add coefficients
   size_t num_coeffs;
   pl_list coeffs = all_coefficients(&num_coeffs, ps, ps_len);
 
@@ -379,6 +397,22 @@ pl_list mccallum_projection(size_t* projection_set_size,
 
   non_constant_coeffs =
     (pl_list)(realloc(non_constant_coeffs, sizeof(pl)*(*projection_set_size)));
+
+  free(coeffs);
+
+  // Add discriminants
+  pl_list discs = all_discriminants(ps, ps_len);
+
+  for (size_t i = 0; i < ps_len; i++) {
+    if (!lp_polynomial_is_constant(discs[i])) {
+      printf("non constant disc\n");
+    }
+  }
+
+  free(discs);
+
+  // Add resultants
+
   return non_constant_coeffs;
 }
 
