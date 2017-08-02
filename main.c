@@ -14,6 +14,14 @@ typedef lp_polynomial_t* pl;
 typedef lp_polynomial_t** pl_list;
 typedef lp_integer_t lpint;
 
+pl pl_new(const lp_polynomial_context_t* ctx) {
+  return lp_polynomial_new(ctx);
+}
+
+void print_poly(const lp_polynomial_t* p) {
+  lp_polynomial_print(p, stdout);
+}
+
 lp_polynomial_t** poly_ptr_list(const size_t len) {
   return (lp_polynomial_t**)(malloc(sizeof(lp_polynomial_t*)*len));
 }
@@ -342,6 +350,15 @@ void test_all_coefficients() {
   
 }
 
+void discriminant(lp_polynomial_t* disc, lp_polynomial_t* p) {
+  pl deriv = pl_new(lp_polynomial_get_context(p));
+  lp_polynomial_derivative(deriv, p);
+  printf("deriv = ");
+  lp_polynomial_print(deriv, stdout);
+  printf("\n");
+  lp_polynomial_resultant(disc, p, deriv);
+}
+
 void test_all_discriminants() {
   lpint two = mk_int(2);
   lpint one = mk_int(1);
@@ -410,7 +427,14 @@ void test_all_discriminants() {
 
   printf("Coefficients\n");
   print_poly_list(coeffs, coeffs_size);
-  
+
+  pl disc = pl_new(ctx);
+
+  discriminant(disc, p);
+
+  printf("Discriminant = ");
+  print_poly(disc);
+  printf("\n");
 }
 
 int main() {
