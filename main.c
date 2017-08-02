@@ -403,12 +403,19 @@ pl_list mccallum_projection(size_t* projection_set_size,
   // Add discriminants
   pl_list discs = all_discriminants(ps, ps_len);
 
+  non_constant_coeffs =
+    (pl_list)(realloc(non_constant_coeffs, sizeof(pl)*(*projection_set_size + ps_len)));
+
   for (size_t i = 0; i < ps_len; i++) {
     if (!lp_polynomial_is_constant(discs[i])) {
-      printf("non constant disc\n");
+      non_constant_coeffs[*projection_set_size] = discs[i];
+      *projection_set_size += 1;
     }
   }
 
+  non_constant_coeffs =
+    (pl_list)(realloc(non_constant_coeffs, sizeof(pl)*(*projection_set_size)));
+  
   free(discs);
 
   // Add resultants
