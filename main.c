@@ -649,6 +649,15 @@ void test_all_discriminants() {
 
   printf("# of roots = %zu\n", num_roots);
 
+  for (size_t i = 0; i < num_roots; i++) {
+    //    printf("Value type = %u\n", roots[i].type);
+
+    assert(all_roots[i].type == LP_VALUE_ALGEBRAIC);
+    
+    lp_algebraic_number_print(&(all_roots[i].value.a), stdout);
+    printf("\n");
+  }
+  
   /* size_t coeffs_size; */
   /* pl_list coeffs = all_coefficients(&coeffs_size, &p, 1); */
 
