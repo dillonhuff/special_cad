@@ -18,6 +18,14 @@ lp_polynomial_t** poly_ptr_list(const size_t len) {
   return (lp_polynomial_t**)(malloc(sizeof(lp_polynomial_t*)*len));
 }
 
+void print_poly_list(lp_polynomial_t * const * const ps,
+		     const size_t len) {
+  for (size_t i = 0; i < len; i++) {
+    lp_polynomial_print(ps[i], stdout);
+    printf("\n");
+  }
+}
+
 void coefficients(lp_polynomial_t** coefficients,
 		  const lp_polynomial_t* p) {
   for (size_t k = 0; k <= lp_polynomial_degree(p); k++) {
@@ -396,7 +404,12 @@ void test_all_discriminants() {
 
   lp_polynomial_print(p, stdout);
   printf("\n");
-  
+
+  size_t coeffs_size;
+  pl_list coeffs = all_coefficients(&coeffs_size, &p, 1);
+
+  printf("Coefficients\n");
+  print_poly_list(coeffs, coeffs_size);
   
 }
 
