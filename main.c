@@ -59,12 +59,17 @@ void isolate_multivariate_roots() {
   size_t deg = lp_polynomial_degree(poly);
   lp_value_t* roots = malloc(sizeof(lp_value_t)*deg);
 
-  //void* data = malloc(sizeof(lp_rational_t)*deg);
-  //lp_value_t* roots = //lp_value_new(LP_VALUE_RATIONAL, data);
-
   size_t roots_size = 0;
   lp_polynomial_roots_isolate(poly, assignment, roots, &roots_size);
 
+  printf("# of roots of poly = %zu\n", roots_size);
+
+  for (size_t i = 0; i < roots_size; i++) {
+    printf("MULTIVARIATE ROOT = ");
+    //lp_algebraic_number_print(&(roots[i]), stdout);
+    printf("\n");
+  }
+  
   // Cleanup
   lp_assignment_delete(assignment);
   lp_polynomial_context_detach(ctx);
