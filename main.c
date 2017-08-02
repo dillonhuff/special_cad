@@ -44,23 +44,11 @@ lp_polynomial_t** all_coefficients(size_t* total_num_coefficients,
   size_t offset = 0;
 
   for (size_t i = 0; i < num_polys; i++) {
-    printf("offset = %zu\n", offset);
-    lp_polynomial_print(p[i], stdout);
-    printf("\n");
-
     coefficients(coeffs + offset, p[i]);
-
-
     offset += lp_polynomial_degree(p[i]) + 1;
   }
 
   return coeffs;
-
-  /* for (size_t i = 0; i < *total_num_coefficients; i++) { */
-  /*   printf("coeff %zu = ", i); */
-  /*   lp_polynomial_print((*coeffs)[i], stdout); */
-  /*   printf("\n"); */
-  /* } */
 
 }
 
@@ -96,16 +84,11 @@ void isolate_multivariate_roots() {
   lp_polynomial_context_t* ctx =
     lp_polynomial_context_new(lp_Z, var_db, var_order);
   
-  printf("Printing a number\n");
-
   lp_integer_t it;
   lp_integer_construct_from_int(lp_Z, &it, 23);
 
   lp_integer_t one;
   lp_integer_construct_from_int(lp_Z, &one, 1);
-
-  lp_integer_print(&it, stdout);
-  printf("\n");
 
   lp_integer_t twelve;
   lp_integer_construct_from_int(lp_Z, &twelve, 12);
@@ -251,8 +234,6 @@ void test_all_coefficients() {
   lp_polynomial_context_t* ctx =
     lp_polynomial_context_new(lp_Z, var_db, var_order);
   
-  printf("Printing a number\n");
-
   lp_integer_t it;
   lp_integer_construct_from_int(lp_Z, &it, 23);
 
@@ -327,7 +308,18 @@ void test_all_coefficients() {
     printf("\n");
   }
 
+  size_t coeffs_len2;
+  lp_polynomial_t** coeffs2 =
+    all_coefficients(&coeffs_len2, coeffs, coeffs_len);
+
+  for (size_t i = 0; i < coeffs_len2; i++) {
+    lp_polynomial_print(coeffs2[i], stdout);
+    printf("\n");
+  }
+  
   free(coeffs);
+  free(coeffs2);
+  
 }
 
 int main() {
