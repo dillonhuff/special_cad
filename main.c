@@ -34,13 +34,12 @@ size_t total_degree(lp_polynomial_t * const * const p,
   return td;
 }
 
-void all_coefficients(lp_polynomial_t*** coeffs, // Initialized in function
-		      size_t* total_num_coefficients,
-		      lp_polynomial_t * const * const p,
-		      const size_t num_polys) {
+lp_polynomial_t** all_coefficients(size_t* total_num_coefficients,
+				   lp_polynomial_t * const * const p,
+				   const size_t num_polys) {
   *total_num_coefficients = total_degree(p, num_polys);
 
-  *coeffs = poly_ptr_list(*total_num_coefficients);
+  lp_polynomial_t** coeffs = poly_ptr_list(*total_num_coefficients);
 
   size_t offset = 0;
 
@@ -49,17 +48,19 @@ void all_coefficients(lp_polynomial_t*** coeffs, // Initialized in function
     lp_polynomial_print(p[i], stdout);
     printf("\n");
 
-    coefficients(*coeffs + offset, p[i]);
+    coefficients(coeffs + offset, p[i]);
 
 
     offset += lp_polynomial_degree(p[i]) + 1;
   }
 
-  for (size_t i = 0; i < *total_num_coefficients; i++) {
-    printf("coeff %zu = ", i);
-    lp_polynomial_print((*coeffs)[i], stdout);
-    printf("\n");
-  }
+  return coeffs;
+
+  /* for (size_t i = 0; i < *total_num_coefficients; i++) { */
+  /*   printf("coeff %zu = ", i); */
+  /*   lp_polynomial_print((*coeffs)[i], stdout); */
+  /*   printf("\n"); */
+  /* } */
 
 }
 
@@ -309,9 +310,9 @@ void test_all_coefficients() {
   lp_polynomial_print(poly_ptrs[0], stdout);
   printf("\n");
 
-  lp_polynomial_t** coeffs;
   size_t coeffs_len;
-  all_coefficients(&coeffs, &coeffs_len, poly_ptrs, 2);
+  lp_polynomial_t** coeffs =
+    all_coefficients(&coeffs_len, poly_ptrs, 2);
 
   lp_polynomial_print(sr, stdout);
   printf("\n");
