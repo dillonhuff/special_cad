@@ -46,7 +46,7 @@ void isolate_multivariate_roots() {
 
   lp_polynomial_print(x, stdout);
   printf("\n");
-  
+
   lp_polynomial_t* poly = lp_polynomial_new(ctx);
   lp_polynomial_add(poly, x2, x);
 
