@@ -10,6 +10,30 @@
 #include <poly/upolynomial.h>
 #include <poly/poly.h>
 
+void coefficients(lp_polynomial_t** coefficients,
+		  const lp_polynomial_t* p) {
+  for (size_t k = 0; k <= lp_polynomial_degree(p); k++) {
+    coefficients[k] = lp_polynomial_new(lp_polynomial_get_context(p));
+    lp_polynomial_get_coefficient(coefficients[k], p, k);
+  }
+
+}
+
+void print_coefficients(const lp_polynomial_t* p) {
+  lp_polynomial_t** coeffs =
+    (lp_polynomial_t**)(malloc(sizeof(lp_polynomial_t*)*lp_polynomial_degree(p)));
+
+  coefficients(coeffs, p);
+  
+  for (size_t k = 0; k <= lp_polynomial_degree(p); k++) {
+    lp_polynomial_t* coeff = coeffs[k];
+    lp_polynomial_print(coeff, stdout);
+    printf("\n");
+  }
+
+  free(coeffs);
+}
+
 void isolate_multivariate_roots() {
 
   lp_variable_db_t* var_db = lp_variable_db_new();
@@ -84,6 +108,9 @@ void isolate_multivariate_roots() {
   printf("sr = ");
   lp_polynomial_print(sr, stdout);
   printf("\n");
+
+  print_coefficients(sr);
+  print_coefficients(poly);
   
   lp_polynomial_t* res = lp_polynomial_new(ctx);
   lp_polynomial_resultant(res, poly, sr);
@@ -91,6 +118,9 @@ void isolate_multivariate_roots() {
   printf("Resultant = ");
   lp_polynomial_print(res, stdout);
   printf("\n");
+
+  printf("top variable of sr = %zu\n", lp_polynomial_top_variable(sr));
+  printf("top variable of resultant = %zu\n", lp_polynomial_top_variable(res));
 
   // Create assignment
   lp_assignment_t* assignment = lp_assignment_new(var_db);
