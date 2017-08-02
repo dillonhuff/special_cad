@@ -650,7 +650,6 @@ void test_all_discriminants() {
   printf("# of roots = %zu\n", num_roots);
 
   for (size_t i = 0; i < num_roots; i++) {
-    //    printf("Value type = %u\n", roots[i].type);
 
     assert(all_roots[i].type == LP_VALUE_ALGEBRAIC);
     
