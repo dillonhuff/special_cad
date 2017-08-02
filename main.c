@@ -401,6 +401,38 @@ pl_list all_pairwise_resultants(size_t* num_resultants,
   return resultants;
 }
 
+int is_duplicate(pl p, lp_polynomial_t* const * const ps, const size_t ps_len) {
+  for (int i = 0; i < ps_len; i++) {
+    if (lp_polynomial_eq(p, ps[i])) {
+      return 1;
+    }
+  }
+  return 0;
+}
+
+pl_list remove_duplicates(size_t* no_duplicates_size_ptr,
+			  lp_polynomial_t* const * const ps,
+			  const size_t ps_len) {
+  pl_list nds = poly_ptr_list(ps_len);
+
+  *no_duplicates_size_ptr = 0;
+
+  for (size_t i = 0; i < ps_len; i++) {
+
+    if (!is_duplicate(ps[i], nds, *no_duplicates_size_ptr)) {
+
+      nds[*no_duplicates_size_ptr] = ps[i];
+      *no_duplicates_size_ptr += 1;
+      
+    }
+  }
+
+  nds =
+    (pl_list)(realloc(nds, sizeof(pl)*(*no_duplicates_size_ptr)));
+  
+  return nds;
+}
+
 pl_list mccallum_projection(size_t* projection_set_size,
 			    lp_polynomial_t* const * const ps,
 			    const size_t ps_len) {
@@ -471,7 +503,15 @@ pl_list mccallum_projection(size_t* projection_set_size,
 
   free(resultants);
 
-  return non_constant_coeffs;
+  size_t final_proj_size = 0;
+  pl_list no_duplicates =
+    remove_duplicates(&final_proj_size, non_constant_coeffs, *projection_set_size);
+
+  *projection_set_size = final_proj_size;
+
+  free(non_constant_coeffs);
+
+  return no_duplicates;
 }
 
 void test_all_discriminants() {
@@ -551,6 +591,7 @@ void test_all_discriminants() {
   printf("McCallum projection 2\n");
   print_poly_list(mc_proj2, proj2_size);
 
+  assert(proj2_size == 3);
   /* size_t coeffs_size; */
   /* pl_list coeffs = all_coefficients(&coeffs_size, &p, 1); */
 
