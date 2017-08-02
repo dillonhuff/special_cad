@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #include <poly/assignment.h>
 #include <poly/polynomial.h>
@@ -59,14 +60,24 @@ void isolate_multivariate_roots() {
   size_t deg = lp_polynomial_degree(poly);
   lp_value_t* roots = malloc(sizeof(lp_value_t)*deg);
 
+  if (!lp_polynomial_is_univariate_m(poly, assignment)) {
+    printf("ERROR: ");
+    lp_polynomial_print(poly, stdout);
+    printf(" is not univariate under the given assignment");
+  }
+
   size_t roots_size = 0;
   lp_polynomial_roots_isolate(poly, assignment, roots, &roots_size);
 
   printf("# of roots of poly = %zu\n", roots_size);
 
   for (size_t i = 0; i < roots_size; i++) {
-    printf("MULTIVARIATE ROOT = ");
-    //lp_algebraic_number_print(&(roots[i]), stdout);
+    printf("MULTIVARIATE ROOT = \n");
+    printf("Value type = %u\n", roots[i].type);
+
+    assert(roots[i].type == LP_VALUE_ALGEBRAIC);
+    
+    lp_algebraic_number_print(&(roots[i].value.a), stdout);
     printf("\n");
   }
   
