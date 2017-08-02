@@ -550,6 +550,7 @@ void test_all_discriminants() {
 
   printf("McCallum projection 2\n");
   print_poly_list(mc_proj2, proj2_size);
+
   /* size_t coeffs_size; */
   /* pl_list coeffs = all_coefficients(&coeffs_size, &p, 1); */
 
