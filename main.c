@@ -209,6 +209,45 @@ void isolate_multivariate_roots() {
 
 }
 
+lp_value_t* all_sorted_roots(size_t* num_roots_ptr,
+			     lp_assignment_t* const assignment,
+			     lp_polynomial_t * const * const ps,
+			     const size_t ps_len) {
+  *num_roots_ptr = 0;
+  if (ps_len == 0) {
+    return 0;
+  }
+
+  lp_value_t* roots =
+    (lp_value_t*)(malloc(sizeof(lp_value_t)*lp_polynomial_degree(ps[0])));
+
+  for (size_t pnum = 0; pnum < ps_len; pnum++) {
+    // Isolate roots
+    size_t deg = lp_polynomial_degree(ps[pnum]);
+    lp_value_t* p_roots = malloc(sizeof(lp_value_t)*deg);
+
+    if (!lp_polynomial_is_univariate_m(ps[pnum], assignment)) {
+      printf("ERROR: ");
+      lp_polynomial_print(ps[pnum], stdout);
+      printf(" is not univariate under the given assignment\n");
+      assert(0);
+    }
+
+    size_t roots_size = 0;
+    lp_polynomial_roots_isolate(ps[pnum], assignment, p_roots, &roots_size);
+    printf("Initial roots size = %zu\n", roots_size);
+
+    roots = (lp_value_t*)(realloc(roots, sizeof(lp_value_t)*(lp_polynomial_degree(ps[pnum]) + *num_roots_ptr) ));
+    for (size_t i = 0; i < roots_size; i++) {
+      roots[*num_roots_ptr] = p_roots[i];
+      (*num_roots_ptr)++;
+    }
+
+    roots = (lp_value_t*)(realloc(roots, sizeof(lp_value_t)*(*num_roots_ptr)));
+  }
+  return roots;
+}
+
 void isolate_univariate_roots() {
 
   lp_upolynomial_t* x2 = lp_upolynomial_construct_power(lp_Z, 2, 23);
@@ -438,7 +477,7 @@ pl_list mccallum_projection(size_t* projection_set_size,
 			    const size_t ps_len) {
 
   // Add coefficients
-  size_t num_coeffs;
+  size_t num_coeffs = 0;
   pl_list coeffs = all_coefficients(&num_coeffs, ps, ps_len);
 
   *projection_set_size = 0;
@@ -592,6 +631,23 @@ void test_all_discriminants() {
   print_poly_list(mc_proj2, proj2_size);
 
   assert(proj2_size == 3);
+
+  // Testing lifting
+
+  // Create assignment
+  lp_assignment_t* assignment = lp_assignment_new(var_db);
+
+
+  // Not needed for first lifting
+  /* lp_value_t* v_value = lp_value_new(LP_VALUE_INTEGER, &one); */
+  /* lp_assignment_set_value(assignment, v, v_value); */
+  
+  size_t num_roots = 0;
+  lp_value_t* all_roots =
+    all_sorted_roots(&num_roots, assignment, mc_proj2, proj2_size);
+
+  printf("# of roots = %zu\n", num_roots);
+
   /* size_t coeffs_size; */
   /* pl_list coeffs = all_coefficients(&coeffs_size, &p, 1); */
 
