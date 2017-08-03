@@ -556,6 +556,44 @@ pl_list mccallum_projection(size_t* projection_set_size,
   return no_duplicates;
 }
 
+lp_value_t* test_points(size_t* num_test_points_ptr,
+			lp_value_t const * const all_roots,
+			const size_t num_roots) {
+  assert(num_roots > 0);
+
+  *num_test_points_ptr = 2*num_roots + 1;
+
+  lp_value_t* test_points =
+    (lp_value_t*)(malloc(sizeof(lp_value_t)*(*num_test_points_ptr)));
+
+  for (size_t i = 0; i < *num_test_points_ptr; i++) {
+    test_points[i] = all_roots[0];
+  }
+
+  /* // Insert -inf point */
+  /* // TODO: Replace this dummy */
+  /* test_points[0] = all_roots[0]; */
+
+  /* size_t index = 1; */
+  /* // Insert middle points */
+  /* for (size_t i = 0; i < num_roots - 1; i++) { */
+  /*   test_points[index] = all_roots[0]; */
+  /*   index++; */
+  /*   test_points[index] = all_roots[0]; */
+  /*   index++; */
+  /* } */
+
+  /* printf("index = %zu\n", index); */
+
+  /* test_points[index] = all_roots[0]; */
+
+  /* // Insert +inf point */
+  /* test_points[*num_test_points_ptr - 1] = all_roots[0]; */
+
+  return test_points;
+}
+
+
 void test_all_discriminants() {
   lpint two = mk_int(2);
   lpint one = mk_int(1);
@@ -658,7 +696,25 @@ void test_all_discriminants() {
     lp_algebraic_number_print(&(all_roots[i].value.a), stdout);
     printf("\n");
   }
+
+  size_t num_test_points = 0;
+  lp_value_t* all_test_points =
+    test_points(&num_test_points, all_roots, num_roots);
+
+  printf("# of test points = %zu\n", num_test_points);
+
+  for (size_t i = 0; i < num_test_points; i++) {
+
+    assert(all_test_points[i].type == LP_VALUE_ALGEBRAIC);
+    
+    lp_algebraic_number_print(&(all_test_points[i].value.a), stdout);
+
+    printf("\n");
+  }
   
+  /* free(all_roots); */
+  /* free(all_test_points); */
+
   /* size_t coeffs_size; */
   /* pl_list coeffs = all_coefficients(&coeffs_size, &p, 1); */
 
