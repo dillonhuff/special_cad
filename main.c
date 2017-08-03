@@ -591,11 +591,20 @@ lp_value_t* test_points(size_t* num_test_points_ptr,
     assert(is_algebraic(current));
     assert(is_algebraic(next));
 
-    lp_algebraic_number_t* midpoint =
-      (lp_algebraic_number_t*)(malloc(sizeof(lp_algebraic_number_t)));
-    lp_algebraic_number_construct_copy(midpoint, &(current.value.a));
+    /* lp_dyadic_rational_t* dp = */
+    /*   (lp_dyadic_rational_t*)(malloc(sizeof(lp_dyadic_rational_t))); */
 
-    lp_algebraic_number_add(midpoint, &(current.value.a), &(next.value.a));
+    lp_dyadic_rational_t dp;
+    lp_dyadic_rational_construct(&dp);
+    lp_algebraic_number_get_dyadic_midpoint(&(current.value.a), &dp);
+
+    lp_dyadic_rational_destruct(&dp);
+
+    /* lp_algebraic_number_t* midpoint = */
+    /*   (lp_algebraic_number_t*)(malloc(sizeof(lp_algebraic_number_t))); */
+    /* lp_algebraic_number_construct_copy(midpoint, &(current.value.a)); */
+
+    /* lp_algebraic_number_add(midpoint, &(current.value.a), &(next.value.a)); */
 
     test_points[index] = all_roots[0];
     index++;
