@@ -706,26 +706,6 @@ lp_value_t* test_points(size_t* num_test_points_ptr,
 
   lp_value_construct(&(test_points[*num_test_points_ptr - 1]), LP_VALUE_ALGEBRAIC, &pos_inf_pt);
 
-  /* // Insert -inf point */
-  /* // TODO: Replace this dummy */
-  /* test_points[0] = all_roots[0]; */
-
-  /* size_t index = 1; */
-  /* // Insert middle points */
-  /* for (size_t i = 0; i < num_roots - 1; i++) { */
-  /*   test_points[index] = all_roots[0]; */
-  /*   index++; */
-  /*   test_points[index] = all_roots[0]; */
-  /*   index++; */
-  /* } */
-
-  /* printf("index = %zu\n", index); */
-
-  /* test_points[index] = all_roots[0]; */
-
-  /* // Insert +inf point */
-  /* test_points[*num_test_points_ptr - 1] = all_roots[0]; */
-
   return test_points;
 }
 
