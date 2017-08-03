@@ -556,6 +556,10 @@ pl_list mccallum_projection(size_t* projection_set_size,
   return no_duplicates;
 }
 
+size_t is_algebraic(const lp_value_t val) {
+  return val.type == LP_VALUE_ALGEBRAIC;
+}
+
 lp_value_t* test_points(size_t* num_test_points_ptr,
 			lp_value_t const * const all_roots,
 			const size_t num_roots) {
@@ -566,9 +570,39 @@ lp_value_t* test_points(size_t* num_test_points_ptr,
   lp_value_t* test_points =
     (lp_value_t*)(malloc(sizeof(lp_value_t)*(*num_test_points_ptr)));
 
-  for (size_t i = 0; i < *num_test_points_ptr; i++) {
-    test_points[i] = all_roots[0];
+  // Construct dyadic rational
+  /* lp_dyadic_rational_t* fst_point = */
+  /*   (lp_dyadic_rational_t*)(malloc(sizeof(lp_dyadic_rational_t))); */
+  /* lp_dyadic_rational_from_integer(fst_point, mk_int()); */
+
+  // Construct the rational interval
+
+  test_points[0] = all_roots[0];
+
+  size_t index = 1;
+  for (size_t i = 0; i < num_roots - 1; i++) {
+    test_points[index] = all_roots[i / 2];
+    index++;
+
+    // Construct midpoint
+    lp_value_t current = all_roots[i];
+    lp_value_t next = all_roots[i + 1];
+
+    assert(is_algebraic(current));
+    assert(is_algebraic(next));
+
+    lp_algebraic_number_t* midpoint =
+      (lp_algebraic_number_t*)(malloc(sizeof(lp_algebraic_number_t)));
+    lp_algebraic_number_construct_copy(midpoint, &(current.value.a));
+
+    lp_algebraic_number_add(midpoint, &(current.value.a), &(next.value.a));
+
+    test_points[index] = all_roots[0];
+    index++;
   }
+
+  test_points[*num_test_points_ptr - 2] = all_roots[num_roots - 1];
+  test_points[*num_test_points_ptr - 1] = all_roots[0];
 
   /* // Insert -inf point */
   /* // TODO: Replace this dummy */
