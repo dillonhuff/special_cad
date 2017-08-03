@@ -560,6 +560,38 @@ size_t is_algebraic(const lp_value_t val) {
   return val.type == LP_VALUE_ALGEBRAIC;
 }
 
+void minus_one(lp_algebraic_number_t* res,
+	       const lp_algebraic_number_t* const a) {
+  assert(a->f == 0);
+
+  lp_dyadic_rational_t tmp;
+  lp_dyadic_rational_construct_from_int(&tmp, 1, 0);
+
+  lp_dyadic_rational_t cp;
+  lp_dyadic_rational_construct(&cp);
+  lp_algebraic_number_get_dyadic_midpoint(a, &cp);
+
+  lp_dyadic_rational_t m_one;
+  lp_dyadic_rational_construct(&m_one);
+  lp_dyadic_rational_sub(&m_one, &cp, &tmp);
+
+  lp_algebraic_number_construct_from_dyadic_rational(res, &m_one);
+  
+
+  /* lp_algebraic_number_t alg_one; */
+  /* lp_algebraic_number_construct_from_dyadic_rational(&alg_one, &tmp); */
+
+  /* lp_algebraic_number_t alg_diff; */
+  /* lp_algebraic_number_sub(res, a, &alg_one); */
+
+  lp_dyadic_rational_destruct(&m_one);
+  lp_dyadic_rational_destruct(&tmp);
+  lp_dyadic_rational_destruct(&cp);
+
+  //lp_algebraic_number_destruct(&alg_one);
+  
+}
+
 lp_value_t* test_points(size_t* num_test_points_ptr,
 			lp_value_t const * const all_roots,
 			const size_t num_roots) {
@@ -570,6 +602,13 @@ lp_value_t* test_points(size_t* num_test_points_ptr,
   lp_value_t* test_points =
     (lp_value_t*)(malloc(sizeof(lp_value_t)*(*num_test_points_ptr)));
 
+  lp_algebraic_number_t neg_inf_pt;
+  minus_one(&neg_inf_pt, &(all_roots[0].value.a));
+
+  printf("Minus inf point = ");
+  lp_algebraic_number_print(&neg_inf_pt, stdout);
+  printf("\n");
+
   // Construct dyadic rational
   /* lp_dyadic_rational_t* fst_point = */
   /*   (lp_dyadic_rational_t*)(malloc(sizeof(lp_dyadic_rational_t))); */
@@ -577,7 +616,8 @@ lp_value_t* test_points(size_t* num_test_points_ptr,
 
   // Construct the rational interval
 
-  test_points[0] = all_roots[0];//minus_one(all_roots[0].value.a);
+  //test_points[0] = all_roots[0];//minus_one(all_roots[0].value.a);
+  lp_value_construct(&(test_points[0]), LP_VALUE_ALGEBRAIC, &neg_inf_pt);
 
   size_t index = 1;
   for (size_t i = 0; i < num_roots - 1; i++) {
