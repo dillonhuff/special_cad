@@ -577,7 +577,7 @@ lp_value_t* test_points(size_t* num_test_points_ptr,
 
   // Construct the rational interval
 
-  test_points[0] = all_roots[0];
+  test_points[0] = all_roots[0];//minus_one(all_roots[0].value.a);
 
   size_t index = 1;
   for (size_t i = 0; i < num_roots - 1; i++) {
@@ -602,7 +602,6 @@ lp_value_t* test_points(size_t* num_test_points_ptr,
     lp_dyadic_rational_construct(&np);
     lp_algebraic_number_get_dyadic_midpoint(&(next.value.a), &np);
 
-
     lp_dyadic_rational_t sum;
     lp_dyadic_rational_construct(&sum);
     lp_dyadic_rational_add(&sum, &cp, &np);
@@ -616,6 +615,8 @@ lp_value_t* test_points(size_t* num_test_points_ptr,
     lp_dyadic_rational_print(mid, stdout);
     printf("\n");
 
+    // NOTE: I'm not sure whether I can just use this as a value or whether it
+    // needs to be allocated explicitly to survive in the lp_value_t
     lp_algebraic_number_t* mid_a =
       (lp_algebraic_number_t*)(malloc(sizeof(lp_algebraic_number_t)));
     lp_algebraic_number_construct_from_dyadic_rational(mid_a, mid);
