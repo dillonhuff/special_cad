@@ -246,6 +246,8 @@ lp_value_t* all_sorted_roots(size_t* num_roots_ptr,
     roots = (lp_value_t*)(realloc(roots, sizeof(lp_value_t)*(*num_roots_ptr)));
   }
 
+  qsort(roots, *num_roots_ptr, sizeof(lp_value_t), lp_value_cmp_void);
+
   return roots;
 }
 
@@ -642,7 +644,7 @@ void test_all_discriminants() {
   // Not needed for first lifting
   /* lp_value_t* v_value = lp_value_new(LP_VALUE_INTEGER, &one); */
   /* lp_assignment_set_value(assignment, v, v_value); */
-  
+
   size_t num_roots = 0;
   lp_value_t* all_roots =
     all_sorted_roots(&num_roots, assignment, mc_proj2, proj2_size);
