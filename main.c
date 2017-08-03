@@ -683,15 +683,8 @@ lp_value_t* test_points(size_t* num_test_points_ptr,
     lp_dyadic_rational_destruct(&sum);
     lp_dyadic_rational_destruct(&cp);
     lp_dyadic_rational_destruct(&np);
-
-    /* lp_algebraic_number_t* midpoint = */
-    /*   (lp_algebraic_number_t*)(malloc(sizeof(lp_algebraic_number_t))); */
-    /* lp_algebraic_number_construct_copy(midpoint, &(current.value.a)); */
-
-    /* lp_algebraic_number_add(midpoint, &(current.value.a), &(next.value.a)); */
-
     
-    lp_value_construct(&(test_points[index]), LP_VALUE_ALGEBRAIC, mid_a);// = all_roots[0];
+    lp_value_construct(&(test_points[index]), LP_VALUE_ALGEBRAIC, mid_a);
     index++;
   }
 
