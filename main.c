@@ -592,6 +592,29 @@ void minus_one(lp_algebraic_number_t* res,
   
 }
 
+void plus_one(lp_algebraic_number_t* res,
+	       const lp_algebraic_number_t* const a) {
+  assert(a->f == 0);
+
+  lp_dyadic_rational_t tmp;
+  lp_dyadic_rational_construct_from_int(&tmp, 1, 0);
+
+  lp_dyadic_rational_t cp;
+  lp_dyadic_rational_construct(&cp);
+  lp_algebraic_number_get_dyadic_midpoint(a, &cp);
+
+  lp_dyadic_rational_t m_one;
+  lp_dyadic_rational_construct(&m_one);
+  lp_dyadic_rational_add(&m_one, &cp, &tmp);
+
+  lp_algebraic_number_construct_from_dyadic_rational(res, &m_one);
+
+  lp_dyadic_rational_destruct(&m_one);
+  lp_dyadic_rational_destruct(&tmp);
+  lp_dyadic_rational_destruct(&cp);
+
+}
+
 lp_value_t* test_points(size_t* num_test_points_ptr,
 			lp_value_t const * const all_roots,
 			const size_t num_roots) {
@@ -609,14 +632,6 @@ lp_value_t* test_points(size_t* num_test_points_ptr,
   lp_algebraic_number_print(&neg_inf_pt, stdout);
   printf("\n");
 
-  // Construct dyadic rational
-  /* lp_dyadic_rational_t* fst_point = */
-  /*   (lp_dyadic_rational_t*)(malloc(sizeof(lp_dyadic_rational_t))); */
-  /* lp_dyadic_rational_from_integer(fst_point, mk_int()); */
-
-  // Construct the rational interval
-
-  //test_points[0] = all_roots[0];//minus_one(all_roots[0].value.a);
   lp_value_construct(&(test_points[0]), LP_VALUE_ALGEBRAIC, &neg_inf_pt);
 
   size_t index = 1;
@@ -681,7 +696,15 @@ lp_value_t* test_points(size_t* num_test_points_ptr,
   }
 
   test_points[*num_test_points_ptr - 2] = all_roots[num_roots - 1];
-  test_points[*num_test_points_ptr - 1] = all_roots[0];
+
+  lp_algebraic_number_t pos_inf_pt;
+  plus_one(&pos_inf_pt, &(all_roots[num_roots - 1].value.a));
+
+  printf("Pos inf point = ");
+  lp_algebraic_number_print(&pos_inf_pt, stdout);
+  printf("\n");
+
+  lp_value_construct(&(test_points[*num_test_points_ptr - 1]), LP_VALUE_ALGEBRAIC, &pos_inf_pt);
 
   /* // Insert -inf point */
   /* // TODO: Replace this dummy */
