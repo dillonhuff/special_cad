@@ -236,6 +236,7 @@ void lift_polynomials(cad_cell* root,
   printf("LIFTING, # of projection sets left = %zu\n", num_projection_sets);
   printf("CURRENT ASSIGNMENT\n");
   lp_assignment_print(asg, stdout);
+  printf("\n");
 
   if (num_projection_sets == 0) {
     return;
@@ -271,14 +272,18 @@ void lift_polynomials(cad_cell* root,
 
 
     // TODO: Actuall construct new cells
+    children[i] = make_cad_cell(root, 0, &(all_test_points[i]));
     lp_assignment_set_value(asg, next_var, &(all_test_points[i]));
 
-    lift_polynomials(root, sets_left, num_projection_sets - 1, asg);
+    lift_polynomials(&(children[i]), sets_left, num_projection_sets - 1, asg);
 
     lp_assignment_set_value(asg, next_var, NULL);
 
     //lp_value_destruct(&fresh_value);
   }
+
+  root->children = children;
+  root->num_children = num_test_points;
   
 }
 
@@ -287,6 +292,8 @@ void print_cad_tree(cad_cell* root) {
     printf("ROOT\n");
   } else {
     assert(is_algebraic(*(root->value)));
+
+    printf("CELL VALUE = ");
     lp_algebraic_number_print(&((root->value)->value.a), stdout);
     printf("\n");
   }
