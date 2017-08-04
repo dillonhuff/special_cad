@@ -680,7 +680,14 @@ void test_conic_sections() {
   lp_polynomial_context_t* ctx =
     lp_polynomial_context_new(lp_Z, var_db, var_order);
   
-  lp_polynomial_t** cs = build_2_conic_sections(ctx);
+  lp_polynomial_t** cs = build_2_conic_sections(ctx, var_db, var_order);
+
+  printf("Conic sections\n");
+  lp_polynomial_print(cs[0], stdout);
+  printf("\n");
+  lp_polynomial_print(cs[1], stdout);
+  printf("\n");
+				       
 
   lp_polynomial_context_detach(ctx);
 }
