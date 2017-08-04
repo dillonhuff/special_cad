@@ -14,10 +14,6 @@
 #include "cad_tree.h"
 #include "polynomial_examples.h"
 
-void print_poly(const lp_polynomial_t* p) {
-  lp_polynomial_print(p, stdout);
-}
-
 lp_polynomial_t** poly_ptr_list(const size_t len) {
   return (lp_polynomial_t**)(malloc(sizeof(lp_polynomial_t*)*len));
 }
@@ -233,13 +229,6 @@ void isolate_univariate_roots() {
     printf("\n");
   }
 
-}
-
-lp_integer_t mk_int(size_t i) {
-  lp_integer_t it;
-  lp_integer_construct_from_int(lp_Z, &it, i);
-
-  return it;
 }
 
 void test_all_coefficients() {
