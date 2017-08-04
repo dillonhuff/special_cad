@@ -128,6 +128,8 @@ lp_value_t* test_points(size_t* num_test_points_ptr,
 			lp_value_t const * const all_roots,
 			const size_t num_roots) {
   if (num_roots == 0) {
+    *num_test_points_ptr = 1;
+
     lp_value_t* test_points =
       (lp_value_t*)(malloc(sizeof(lp_value_t)));
 
@@ -287,20 +289,33 @@ void lift_polynomials(cad_cell* root,
   
 }
 
-void print_cad_tree(cad_cell* root) {
+void tab_out(const size_t level) {
+  for (size_t i = 0; i < level; i++) {
+    printf("\t");
+  }
+}
+
+void print_cad_tree_rec(const size_t level, cad_cell* root) {
   if (root->value == NULL) {
+    tab_out(level);
     printf("ROOT\n");
   } else {
     assert(is_algebraic(*(root->value)));
 
+    tab_out(level);
     printf("CELL VALUE = ");
     lp_algebraic_number_print(&((root->value)->value.a), stdout);
     printf("\n");
   }
 
   for (size_t i = 0; i < root->num_children; i++) {
-    print_cad_tree(&(root->children[i]));
+    
+    print_cad_tree_rec(level + 1, &(root->children[i]));
   }
+}
+
+void print_cad_tree(cad_cell* root) {
+  print_cad_tree_rec(0, root);
 }
 
 size_t is_algebraic(const lp_value_t val) {
