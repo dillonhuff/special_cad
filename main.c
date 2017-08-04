@@ -10,6 +10,9 @@
 #include <poly/upolynomial.h>
 #include <poly/poly.h>
 
+
+#include "cad_tree.h"
+
 typedef lp_polynomial_t* pl;
 typedef lp_polynomial_t** pl_list;
 typedef lp_integer_t lpint;
@@ -821,28 +824,18 @@ void test_all_discriminants() {
     printf("\n");
   }
   
-  /* free(all_roots); */
-  /* free(all_test_points); */
+  free(all_roots);
 
-  /* size_t coeffs_size; */
-  /* pl_list coeffs = all_coefficients(&coeffs_size, &p, 1); */
-
-  /* printf("Coefficients\n"); */
-  /* print_poly_list(coeffs, coeffs_size); */
-
-  /* pl disc = pl_new(ctx); */
-
-  /* discriminant(disc, p); */
-
-  /* printf("Discriminant = "); */
-  /* print_poly(disc); */
-  /* printf("\n"); */
+  
+  
+  free(all_test_points);
 
 }
 
 int main() {
+  isolate_multivariate_roots();
   test_all_coefficients();
   test_all_discriminants();
-  //isolate_multivariate_roots();
+
 
 }
