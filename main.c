@@ -823,12 +823,20 @@ void test_all_discriminants() {
 
     printf("\n");
   }
-  
+
   free(all_roots);
 
+  projection_set* projection_sets =
+    (projection_set*)(malloc(sizeof(projection_set)*3));
+  projection_sets[0] = make_projection_set(mc_proj2, proj2_size);
+  projection_sets[1] = make_projection_set(mc_proj1, proj1_size);
+  projection_sets[2] = make_projection_set(&p, 1);
+
+  size_t num_projection_sets = 3;
+
   cad_cell root = make_cad_cell(NULL, 0, NULL);
-  
-  
+
+
   free(all_test_points);
 
 }

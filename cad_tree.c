@@ -12,3 +12,12 @@ cad_cell make_cad_cell(cad_cell* parent,
 
   return c;
 }
+
+projection_set make_projection_set(lp_polynomial_t** polys,
+				   size_t length) {
+  projection_set s;
+  s.polynomials = polys;
+  s.length = length;
+
+  return s;
+}
