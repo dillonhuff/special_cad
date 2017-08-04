@@ -1,5 +1,7 @@
 #include "polynomial_examples.h"
 
+#include <stdlib.h>
+
 #include <poly/variable_db.h>
 
 // A_1, B_1, C_1, D_1, E_1, F_1
@@ -17,5 +19,12 @@ lp_polynomial_t** build_2_conic_sections(const lp_polynomial_context_t* ctx,
   lp_variable_order_push(var_order, x);  
   lp_variable_order_push(var_order, y);
 
+  lp_polynomial_t** sections =
+    (lp_polynomial_t**) malloc(sizeof(lp_polynomial_t*) * 2);
+
+  sections[0] = pl_new(ctx);
+  sections[1] = pl_new(ctx);
+
+  return sections;
   
 }

@@ -14,10 +14,6 @@
 #include "cad_tree.h"
 #include "polynomial_examples.h"
 
-lp_polynomial_t* pl_new(const lp_polynomial_context_t* ctx) {
-  return lp_polynomial_new(ctx);
-}
-
 void print_poly(const lp_polynomial_t* p) {
   lp_polynomial_print(p, stdout);
 }
