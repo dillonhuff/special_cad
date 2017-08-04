@@ -559,10 +559,6 @@ pl_list mccallum_projection(size_t* projection_set_size,
   return no_duplicates;
 }
 
-size_t is_algebraic(const lp_value_t val) {
-  return val.type == LP_VALUE_ALGEBRAIC;
-}
-
 void minus_one(lp_algebraic_number_t* res,
 	       const lp_algebraic_number_t* const a) {
   assert(a->f == 0);
@@ -826,19 +822,31 @@ void test_all_discriminants() {
 
   free(all_roots);
 
+  // Projection polynomials to be lifted
+
+  size_t num_projection_sets = 3;
+
   projection_set* projection_sets =
     (projection_set*)(malloc(sizeof(projection_set)*3));
   projection_sets[0] = make_projection_set(mc_proj2, proj2_size);
   projection_sets[1] = make_projection_set(mc_proj1, proj1_size);
   projection_sets[2] = make_projection_set(&p, 1);
 
-  size_t num_projection_sets = 3;
 
+  // Initial empty assignment
+  lp_assignment_t* asg = lp_assignment_new(var_db);
+
+  // Create the root of the CAD tree
   cad_cell root = make_cad_cell(NULL, 0, NULL);
 
+  // Actually call CAD lifting
+  lift_polynomials(&root, projection_sets, num_projection_sets, asg);
+
+  printf("Final CAD tree\n");
+  print_cad_tree(&root);
 
   free(all_test_points);
-
+  lp_assignment_destruct(asg);
 }
 
 int main() {
