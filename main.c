@@ -766,7 +766,6 @@ void test_constant_conic_sections() {
   projection_sets[0] = make_projection_set(mc_proj1, projection_set_size);
   projection_sets[1] = make_projection_set(cs, 2);
 
-
   // Initial empty assignment
   lp_assignment_t* asg = lp_assignment_new(var_db);
 

@@ -4,6 +4,7 @@
 #include <stdlib.h>
 
 #include <poly/polynomial.h>
+#include <poly/upolynomial.h>
 
 cad_cell make_cad_cell(cad_cell* parent,
 		       const size_t num_children,
@@ -71,33 +72,75 @@ lp_value_t* all_sorted_roots(size_t* num_roots_ptr,
 
 void minus_one(lp_algebraic_number_t* res,
 	       const lp_algebraic_number_t* const a) {
-  assert(a->f == 0);
+  if (a->f == 0) {
+
+    lp_dyadic_rational_t tmp;
+    lp_dyadic_rational_construct_from_int(&tmp, 1, 0);
+
+    lp_dyadic_rational_t cp;
+    lp_dyadic_rational_construct(&cp);
+    lp_algebraic_number_get_dyadic_midpoint(a, &cp);
+
+    lp_dyadic_rational_t m_one;
+    lp_dyadic_rational_construct(&m_one);
+    lp_dyadic_rational_sub(&m_one, &cp, &tmp);
+
+    lp_algebraic_number_construct_from_dyadic_rational(res, &m_one);
+  
+
+    /* lp_algebraic_number_t alg_one; */
+    /* lp_algebraic_number_construct_from_dyadic_rational(&alg_one, &tmp); */
+
+    /* lp_algebraic_number_t alg_diff; */
+    /* lp_algebraic_number_sub(res, a, &alg_one); */
+
+    lp_dyadic_rational_destruct(&m_one);
+    lp_dyadic_rational_destruct(&tmp);
+    lp_dyadic_rational_destruct(&cp);
+    return;
+  }
+
+  assert(a->f != 0);
 
   lp_dyadic_rational_t tmp;
   lp_dyadic_rational_construct_from_int(&tmp, 1, 0);
 
-  lp_dyadic_rational_t cp;
-  lp_dyadic_rational_construct(&cp);
-  lp_algebraic_number_get_dyadic_midpoint(a, &cp);
+  lp_dyadic_rational_t tmp2;
+  lp_dyadic_rational_construct_from_int(&tmp2, 2, 0);
 
-  lp_dyadic_rational_t m_one;
-  lp_dyadic_rational_construct(&m_one);
-  lp_dyadic_rational_sub(&m_one, &cp, &tmp);
-
-  lp_algebraic_number_construct_from_dyadic_rational(res, &m_one);
+  lp_dyadic_rational_t tmpm1;
+  lp_dyadic_rational_construct_from_int(&tmpm1, -1, 0);
   
+  lp_dyadic_interval_t d;
+  //lp_dyadic_interval_construct_point(&d, &tmp);
+  lp_dyadic_interval_construct(&d, &tmpm1, 1, &tmp2, 1);
 
-  /* lp_algebraic_number_t alg_one; */
-  /* lp_algebraic_number_construct_from_dyadic_rational(&alg_one, &tmp); */
+  int coeffs[2];
+  coeffs[0] = -1;
+  coeffs[1] = 1;
+  lp_upolynomial_t* f =
+    lp_upolynomial_construct_from_int(lp_Z, 1, coeffs);
 
-  /* lp_algebraic_number_t alg_diff; */
-  /* lp_algebraic_number_sub(res, a, &alg_one); */
+  printf("Univariate poly = ");
+  lp_upolynomial_print(f, stdout);
+  printf("\n");
+  lp_algebraic_number_t tmp_one;
+  lp_algebraic_number_construct(&tmp_one, f, &d);
 
-  lp_dyadic_rational_destruct(&m_one);
+  printf("Algebraic number 1 = ");
+  lp_algebraic_number_print(&tmp_one, stdout);
+  printf("\n");
+
+  lp_algebraic_number_add(res, a, &tmp_one);
+
+  assert(0);
+
   lp_dyadic_rational_destruct(&tmp);
-  lp_dyadic_rational_destruct(&cp);
-
-  //lp_algebraic_number_destruct(&alg_one);
+  lp_algebraic_number_destruct(&tmp_one);
+  lp_dyadic_rational_destruct(&tmp);
+  lp_dyadic_rational_destruct(&tmpm1);
+  lp_dyadic_rational_destruct(&tmp2);
+  lp_dyadic_interval_destruct(&d);
   
 }
 
