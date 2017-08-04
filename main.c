@@ -826,6 +826,7 @@ void test_all_discriminants() {
   
   free(all_roots);
 
+  cad_cell root = make_cad_cell(NULL, 0, NULL);
   
   
   free(all_test_points);
