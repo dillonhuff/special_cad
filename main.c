@@ -665,6 +665,13 @@ void test_conic_sections() {
   printf("\n");
 				       
 
+  size_t projection_set_size = 0;
+  pl_list mc_proj1 =
+    mccallum_projection(&projection_set_size, cs, 2);
+
+  printf("Projection set\n");
+  print_poly_list(mc_proj1, projection_set_size);
+  
   lp_polynomial_context_detach(ctx);
 }
 
