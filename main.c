@@ -14,7 +14,7 @@
 #include "cad_tree.h"
 #include "polynomial_examples.h"
 
-pl pl_new(const lp_polynomial_context_t* ctx) {
+lp_polynomial_t* pl_new(const lp_polynomial_context_t* ctx) {
   return lp_polynomial_new(ctx);
 }
 
@@ -665,17 +665,8 @@ void test_all_discriminants() {
 void test_conic_sections() {
   lp_variable_db_t* var_db = lp_variable_db_new();
 
-  // Create variables
-  lp_variable_t x1 = lp_variable_db_new_variable(var_db, "x1");
-  lp_variable_t x2 = lp_variable_db_new_variable(var_db, "x2");
-  lp_variable_t x3 = lp_variable_db_new_variable(var_db, "x3");
-
   // Create variable order
   lp_variable_order_t* var_order = lp_variable_order_new();
-  lp_variable_order_push(var_order, x1);  
-  lp_variable_order_push(var_order, x2);
-  lp_variable_order_push(var_order, x3);
-
 
   lp_polynomial_context_t* ctx =
     lp_polynomial_context_new(lp_Z, var_db, var_order);

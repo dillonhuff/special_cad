@@ -2,9 +2,7 @@
 
 #include <poly/value.h>
 
-typedef lp_polynomial_t* pl;
-typedef lp_polynomial_t** pl_list;
-typedef lp_integer_t lpint;
+#include "utils.h"
 
 struct cad_cell {
   struct cad_cell* parent;
