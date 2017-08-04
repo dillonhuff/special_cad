@@ -4,6 +4,26 @@
 
 #include <poly/variable_db.h>
 
+lp_polynomial_t*
+build_int_coeff_conic_section(const lp_polynomial_context_t* ctx,
+			      lp_variable_db_t* var_db,
+			      lp_variable_order_t* var_order,
+			      lp_integer_t* coefficients,
+			      lp_variable_t x,
+			      lp_variable_t y) {
+  lp_integer_t one = mk_int(1);
+  
+  lp_polynomial_t* cs = pl_new(ctx);
+
+  lp_polynomial_t* xx = pl_new(ctx);
+  lp_polynomial_construct_simple(xx, ctx, &one, x, 2);
+
+  lp_polynomial_t* yy = pl_new(ctx);
+  lp_polynomial_construct_simple(yy, ctx, &one, y, 2);
+
+  return cs;
+}
+
 // A_1, B_1, C_1, D_1, E_1, F_1
 lp_polynomial_t** build_2_conic_sections(const lp_polynomial_context_t* ctx,
 					 lp_variable_db_t* var_db,
