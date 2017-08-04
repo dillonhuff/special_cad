@@ -132,7 +132,6 @@ lp_value_t* test_points(size_t* num_test_points_ptr,
 
     lp_value_t* test_points =
       (lp_value_t*)(malloc(sizeof(lp_value_t)));
-
     
     lp_dyadic_rational_t tmp;
     lp_dyadic_rational_construct_from_int(&tmp, 1, 0);
