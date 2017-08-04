@@ -6,6 +6,38 @@
 #include <poly/polynomial.h>
 #include <poly/upolynomial.h>
 
+void algnum_add(lp_algebraic_number_t* res,
+		lp_algebraic_number_t const * a,
+		lp_algebraic_number_t const * b) {
+  if (a->f && b->f) {
+    lp_algebraic_number_add(res, a, b);
+    return;
+  } else if ((a->f == 0) && (b->f == 0)) {
+
+    lp_dyadic_rational_t tmp_a;
+    lp_algebraic_number_get_dyadic_midpoint(a, &tmp_a);
+
+    lp_dyadic_rational_destruct(&tmp_a);
+
+    assert(0);
+    return;
+  } else {
+
+    printf("ERROR: Mixed rational and algebraic numbers\n");
+
+    printf("a = ");
+    //lp_algebraic_number_print(a, stdout);
+    printf("\n");
+
+    printf("b = ");
+    lp_algebraic_number_print(b, stdout);
+    printf("\n");
+
+    assert(0);
+  }
+}
+  //lp_algebraic_number_add(res, a, &tmp_one);
+
 cad_cell make_cad_cell(cad_cell* parent,
 		       const size_t num_children,
 		       lp_value_t* value) {
@@ -100,7 +132,16 @@ void minus_one(lp_algebraic_number_t* res,
     return;
   }
 
+
   assert(a->f != 0);
+
+  printf("minus one a input = ");
+  lp_upolynomial_print(a->f, stdout);
+  printf("\n");
+  
+  /* printf("minus one a input = "); */
+  /* lp_algebraic_number_print(a, stdout); */
+  /* printf("\n"); */
 
   lp_dyadic_rational_t tmp;
   lp_dyadic_rational_construct_from_int(&tmp, 1, 0);
@@ -131,7 +172,8 @@ void minus_one(lp_algebraic_number_t* res,
   lp_algebraic_number_print(&tmp_one, stdout);
   printf("\n");
 
-  lp_algebraic_number_add(res, a, &tmp_one);
+  algnum_add(res, a, &tmp_one);
+  //lp_algebraic_number_add(res, a, &tmp_one);
 
   assert(0);
 
@@ -196,14 +238,51 @@ lp_value_t* test_points(size_t* num_test_points_ptr,
   lp_value_t* test_points =
     (lp_value_t*)(malloc(sizeof(lp_value_t)*(*num_test_points_ptr)));
 
-  lp_algebraic_number_t neg_inf_pt;
-  minus_one(&neg_inf_pt, &(all_roots[0].value.a));
+  if (is_algebraic(all_roots[0])) {
 
-  printf("Minus inf point = ");
-  lp_algebraic_number_print(&neg_inf_pt, stdout);
-  printf("\n");
+    lp_algebraic_number_t neg_inf_pt;
+    minus_one(&neg_inf_pt, &(all_roots[0].value.a));
 
-  lp_value_construct(&(test_points[0]), LP_VALUE_ALGEBRAIC, &neg_inf_pt);
+    printf("Minus inf point = ");
+    lp_algebraic_number_print(&neg_inf_pt, stdout);
+    printf("\n");
+
+    lp_value_construct(&(test_points[0]), LP_VALUE_ALGEBRAIC, &neg_inf_pt);
+
+  } else if (is_rational(all_roots[0])) {
+    lp_rational_t one;
+    lp_rational_construct(&one);
+    lp_rational_construct_from_int(&one, 1, 1);
+
+    //lp_rational_t* neg_inf_pt =
+      //(lp_rational_t*) malloc(sizeof(lp_rational_t));
+    lp_rational_t neg_inf_pt;
+    lp_rational_construct(&neg_inf_pt);
+    lp_rational_construct_from_int(&neg_inf_pt, 1, 1);
+
+    printf("Rational value = ");
+    lp_rational_print(&(test_points[0].value.q), stdout);
+    printf("\n");
+
+    printf("Rational value = ");
+    lp_rational_print(&one, stdout);
+    printf("\n");
+    
+    lp_rational_sub(&(test_points[0].value.q), &(test_points[0].value.q), &one);
+    //lp_rational_sub(&neg_inf_pt, &one, &one);
+
+    //lp_value_construct(&(test_points[0]), LP_VALUE_RATIONAL, neg_inf_pt);
+
+    //lp_rational_destruct(&one);
+
+    assert(0);
+
+  } else {
+    printf("type of roots[0] = %u\n", all_roots[0].type);
+
+    assert(0);
+  }
+  //assert(is_algebraic(all_roots[0]));
 
   size_t index = 1;
   for (size_t i = 0; i < num_roots - 1; i++) {
@@ -362,5 +441,9 @@ void print_cad_tree(cad_cell* root) {
 
 size_t is_algebraic(const lp_value_t val) {
   return val.type == LP_VALUE_ALGEBRAIC;
+}
+
+size_t is_rational(const lp_value_t val) {
+  return val.type == LP_VALUE_RATIONAL;
 }
 

@@ -45,3 +45,5 @@ lp_value_t* all_sorted_roots(size_t* num_roots_ptr,
 lp_value_t* test_points(size_t* num_test_points_ptr,
 			lp_value_t const * const all_roots,
 			const size_t num_roots);
+
+size_t is_rational(const lp_value_t val);

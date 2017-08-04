@@ -363,27 +363,27 @@ pl_list all_discriminants(lp_polynomial_t* const * const ps,
 }
 
 pl_list all_pairwise_resultants(size_t* num_resultants,
-				lp_polynomial_t* const * const ps,
+				lp_polynomial_t * const * const ps,
 				const size_t ps_len) {
   *num_resultants = (ps_len*(ps_len - 1)) / 2;
 
   pl_list resultants = poly_ptr_list(*num_resultants);
 
-  size_t total_res = 0;
-  for (size_t i = 0; i < ps_len; i++) {
-    pl f = ps[i];
+  /* size_t total_res = 0; */
+  /* for (size_t i = 0; i < ps_len; i++) { */
+  /*   pl f = ps[i]; */
 
-    for (size_t j = i + 1; j < ps_len; j++) {
-      pl g = ps[j];
+  /*   for (size_t j = i + 1; j < ps_len; j++) { */
+  /*     pl g = ps[j]; */
 
-      pl res = pl_new(lp_polynomial_get_context(g));
-      lp_polynomial_resultant(res, f, g);
-      resultants[total_res] = res;
-      total_res++;
-    }
-  }
+  /*     pl res = pl_new(lp_polynomial_get_context(g)); */
+  /*     lp_polynomial_resultant(res, f, g); */
+  /*     resultants[total_res] = res; */
+  /*     total_res++; */
+  /*   } */
+  /* } */
 
-  assert(total_res == *num_resultants);
+  /* assert(total_res == *num_resultants); */
 
   return resultants;
 }
@@ -421,7 +421,7 @@ pl_list remove_duplicates(size_t* no_duplicates_size_ptr,
 }
 
 pl_list mccallum_projection(size_t* projection_set_size,
-			    lp_polynomial_t* const * const ps,
+			    lp_polynomial_t * const * const ps,
 			    const size_t ps_len) {
 
   // Add coefficients
