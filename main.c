@@ -756,6 +756,30 @@ void test_constant_conic_sections() {
   print_poly_list(mc_proj1, projection_set_size);
 
   printf("---------- Time to compute generalized projection = %f\n", cpu_time_used);
+
+  // Projection polynomials to be lifted
+
+  size_t num_projection_sets = 2;
+
+  projection_set* projection_sets =
+    (projection_set*)(malloc(sizeof(projection_set)*2));
+  projection_sets[0] = make_projection_set(mc_proj1, projection_set_size);
+  projection_sets[1] = make_projection_set(cs, 2);
+
+
+  // Initial empty assignment
+  lp_assignment_t* asg = lp_assignment_new(var_db);
+
+  // Create the root of the CAD tree
+  cad_cell root = make_cad_cell(NULL, 0, NULL);
+
+  // Actually call CAD lifting
+  lift_polynomials(&root, projection_sets, num_projection_sets, asg);
+
+  printf("Final CAD tree\n");
+  print_cad_tree(&root);
+
+  lp_assignment_destruct(asg);
   
   lp_polynomial_context_detach(ctx);
 
