@@ -1,7 +1,8 @@
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
-
+#include <time.h>
+     
 #include <poly/assignment.h>
 #include <poly/polynomial.h>
 #include <poly/variable_order.h>
@@ -665,14 +666,102 @@ void test_conic_sections() {
   printf("\n");
 				       
 
+  clock_t start, end;
+  double cpu_time_used;
+     
+  start = clock();
+
   size_t projection_set_size = 0;
   pl_list mc_proj1 =
     mccallum_projection(&projection_set_size, cs, 2);
 
+  end = clock();
+  cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;  
+  
   printf("Projection set\n");
   print_poly_list(mc_proj1, projection_set_size);
+
+  printf("---------- Time to compute generalized projection = %f\n", cpu_time_used);
+
+  lp_polynomial_context_detach(ctx);
+}
+
+void test_constant_conic_sections() {
+  lp_variable_db_t* var_db = lp_variable_db_new();
+
+  lp_variable_t x = lp_variable_db_new_variable(var_db, "x");
+  lp_variable_t y = lp_variable_db_new_variable(var_db, "y");
+  
+  // Create variable order
+  lp_variable_order_t* var_order = lp_variable_order_new();
+
+  lp_variable_order_push(var_order, x);  
+  lp_variable_order_push(var_order, y);
+  
+  lp_polynomial_context_t* ctx =
+    lp_polynomial_context_new(lp_Z, var_db, var_order);
+
+  printf("Specific polynomials\n");
+
+  lp_integer_t* conic_1_coeffs =
+    (lp_integer_t*) malloc(sizeof(lp_integer_t)*6);
+  conic_1_coeffs[0] = mk_int(1);
+  conic_1_coeffs[1] = mk_int(2);
+  conic_1_coeffs[2] = mk_int(3);
+  conic_1_coeffs[3] = mk_int(4);
+  conic_1_coeffs[4] = mk_int(5);
+  conic_1_coeffs[5] = mk_int(6);
+
+  pl c1 =
+    build_int_coeff_conic_section(ctx, var_db, var_order, conic_1_coeffs, x, y);
+
+  printf("conic section 1 = ");
+  print_poly(c1);
+  printf("\n");
+
+  lp_integer_t* conic_2_coeffs =
+    (lp_integer_t*) malloc(sizeof(lp_integer_t)*6);
+  conic_2_coeffs[0] = mk_int(-3);
+  conic_2_coeffs[1] = mk_int(5);
+  conic_2_coeffs[2] = mk_int(3);
+  conic_2_coeffs[3] = mk_int(1);
+  conic_2_coeffs[4] = mk_int(2);
+  conic_2_coeffs[5] = mk_int(1);
+
+  pl c2 =
+    build_int_coeff_conic_section(ctx, var_db, var_order, conic_2_coeffs, x, y);
+
+  printf("conic section 2 = ");
+  print_poly(c2);
+  printf("\n");
+
+  lp_polynomial_t** cs =
+    (lp_polynomial_t**) malloc(sizeof(pl)*2);
+  cs[0] = c1;
+  cs[1] = c2;
+
+  clock_t start, end;
+  double cpu_time_used;
+
+  start = clock();
+
+  size_t projection_set_size = 0;
+  pl_list mc_proj1 =
+    mccallum_projection(&projection_set_size, cs, 2);
+
+  end = clock();
+  cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;  
+  
+  printf("Projection set\n");
+  print_poly_list(mc_proj1, projection_set_size);
+
+  printf("---------- Time to compute generalized projection = %f\n", cpu_time_used);
   
   lp_polynomial_context_detach(ctx);
+
+  free(conic_1_coeffs);
+  free(conic_2_coeffs);
+
 }
 
 int main() {
@@ -680,5 +769,6 @@ int main() {
   test_all_coefficients();
   test_all_discriminants();
   test_conic_sections();
+  test_constant_conic_sections();
 
 }

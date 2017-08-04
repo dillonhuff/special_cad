@@ -15,11 +15,52 @@ build_int_coeff_conic_section(const lp_polynomial_context_t* ctx,
   
   lp_polynomial_t* cs = pl_new(ctx);
 
+  lp_polynomial_t* xs = pl_new(ctx);
+  lp_polynomial_construct_simple(xs, ctx, &one, x, 1);
+
+  lp_polynomial_t* ys = pl_new(ctx);
+  lp_polynomial_construct_simple(ys, ctx, &one, y, 1);
+  
+  lp_polynomial_t* xp = pl_new(ctx);
+  lp_polynomial_construct_simple(xp, ctx, &(coefficients[3]), x, 1);
+
+  lp_polynomial_add(cs, cs, xp);
+
+  lp_polynomial_t* yp = pl_new(ctx);
+  lp_polynomial_construct_simple(yp, ctx, &(coefficients[4]), y, 1);
+
+  lp_polynomial_add(cs, cs, yp);
+  
   lp_polynomial_t* xx = pl_new(ctx);
-  lp_polynomial_construct_simple(xx, ctx, &one, x, 2);
+  lp_polynomial_construct_simple(xx, ctx, &(coefficients[0]), x, 2);
+
+  lp_polynomial_add(cs, xx, cs);
 
   lp_polynomial_t* yy = pl_new(ctx);
-  lp_polynomial_construct_simple(yy, ctx, &one, y, 2);
+  lp_polynomial_construct_simple(yy, ctx, &(coefficients[2]), y, 2);
+
+  lp_polynomial_add(cs, yy, cs);
+
+  lp_polynomial_t* xy = pl_new(ctx);
+  lp_polynomial_construct_simple(xy, ctx, &(coefficients[1]), x, 1);
+  lp_polynomial_mul(xy, xy, ys);
+
+  lp_polynomial_add(cs, xy, cs);
+
+  lp_polynomial_t* f = pl_new(ctx);
+  lp_polynomial_construct_simple(f, ctx, &(coefficients[5]), x, 0);
+
+  lp_polynomial_add(cs, cs, f);
+
+  lp_polynomial_destruct(xs);
+  lp_polynomial_destruct(ys);
+  lp_polynomial_destruct(xx);
+  lp_polynomial_destruct(yy);
+  lp_polynomial_destruct(xy);
+  lp_polynomial_destruct(xp);
+  lp_polynomial_destruct(yp);
+  lp_polynomial_destruct(f);
+
 
   return cs;
 }
