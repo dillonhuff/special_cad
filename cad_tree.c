@@ -22,6 +22,10 @@ void print_dyadic_info(lp_dyadic_rational_t const * q) {
 }
 
 void check_normalized(lp_algebraic_number_t* a) {
+  printf("Checking normalization of ");
+  lp_algebraic_number_print(a, stdout);
+  printf("\n");
+  
   lp_dyadic_interval_t it = a->I;
   printf("Interval = ");
   lp_dyadic_interval_print(&it, stdout);
