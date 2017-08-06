@@ -447,3 +447,10 @@ size_t is_rational(const lp_value_t val) {
   return val.type == LP_VALUE_RATIONAL;
 }
 
+size_t count_cells(cad_cell const * root) {
+  size_t ncells = 1;
+  for (size_t i = 0; i < root->num_children; i++) {
+    ncells += count_cells(&(root->children[i]));
+  }
+  return ncells;
+}

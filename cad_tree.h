@@ -47,3 +47,5 @@ lp_value_t* test_points(size_t* num_test_points_ptr,
 			const size_t num_roots);
 
 size_t is_rational(const lp_value_t val);
+
+size_t count_cells(cad_cell const * root);

@@ -644,6 +644,11 @@ void test_all_discriminants() {
   printf("Final CAD tree\n");
   print_cad_tree(&root);
 
+
+  size_t total_num_cells = count_cells(&root);
+  printf("total # of cells in tree = %zu\n", total_num_cells);
+
+  assert(total_num_cells == 44);
   free(all_test_points);
   lp_assignment_destruct(asg);
 }
