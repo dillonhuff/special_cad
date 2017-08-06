@@ -269,15 +269,6 @@ lp_value_t* test_points(size_t* num_test_points_ptr,
 
   lp_value_construct_none(&(test_points[*num_test_points_ptr - 1]));
   lp_value_get_value_between(&(all_roots[num_roots - 1]), 1, &pos_inf, 1, &(test_points[*num_test_points_ptr - 1]));
-  
-  /* lp_algebraic_number_t pos_inf_pt; */
-  /* plus_one(&pos_inf_pt, &(all_roots[num_roots - 1].value.a)); */
-
-  /* printf("Pos inf point = "); */
-  /* lp_algebraic_number_print(&pos_inf_pt, stdout); */
-  /* printf("\n"); */
-
-  //lp_value_construct(&(test_points[*num_test_points_ptr - 1]), LP_VALUE_ALGEBRAIC, &pos_inf_pt);
 
   return test_points;
 }
