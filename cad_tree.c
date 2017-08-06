@@ -238,51 +238,53 @@ lp_value_t* test_points(size_t* num_test_points_ptr,
   lp_value_t* test_points =
     (lp_value_t*)(malloc(sizeof(lp_value_t)*(*num_test_points_ptr)));
 
-  if (is_algebraic(all_roots[0])) {
+  /* if (is_algebraic(all_roots[0])) { */
 
-    lp_algebraic_number_t neg_inf_pt;
-    minus_one(&neg_inf_pt, &(all_roots[0].value.a));
+  /*   lp_algebraic_number_t neg_inf_pt; */
+  /*   minus_one(&neg_inf_pt, &(all_roots[0].value.a)); */
 
-    printf("Minus inf point = ");
-    lp_algebraic_number_print(&neg_inf_pt, stdout);
-    printf("\n");
+  /*   printf("Minus inf point = "); */
+  /*   lp_algebraic_number_print(&neg_inf_pt, stdout); */
+  /*   printf("\n"); */
 
-    lp_value_construct(&(test_points[0]), LP_VALUE_ALGEBRAIC, &neg_inf_pt);
+  /*   lp_value_construct(&(test_points[0]), LP_VALUE_ALGEBRAIC, &neg_inf_pt); */
 
-  } else if (is_rational(all_roots[0])) {
-    lp_rational_t one;
-    lp_rational_construct(&one);
-    lp_rational_construct_from_int(&one, 1, 1);
+  /* } else if (is_rational(all_roots[0])) { */
+  /*   lp_rational_t one; */
+  /*   lp_rational_construct(&one); */
+  /*   lp_rational_construct_from_int(&one, 1, 1); */
 
-    //lp_rational_t* neg_inf_pt =
-      //(lp_rational_t*) malloc(sizeof(lp_rational_t));
-    lp_rational_t neg_inf_pt;
-    lp_rational_construct(&neg_inf_pt);
-    lp_rational_construct_from_int(&neg_inf_pt, 1, 1);
+  /*   //lp_rational_t* neg_inf_pt = */
+  /*     //(lp_rational_t*) malloc(sizeof(lp_rational_t)); */
+  /*   lp_rational_t neg_inf_pt; */
+  /*   lp_rational_construct(&neg_inf_pt); */
+  /*   lp_rational_construct_from_int(&neg_inf_pt, 1, 1); */
 
-    printf("Rational value = ");
-    lp_rational_print(&(test_points[0].value.q), stdout);
-    printf("\n");
+  /*   printf("Rational value = "); */
+  /*   lp_rational_print(&(test_points[0].value.q), stdout); */
+  /*   printf("\n"); */
 
-    printf("Rational value = ");
-    lp_rational_print(&one, stdout);
-    printf("\n");
+  /*   printf("Rational value = "); */
+  /*   lp_rational_print(&one, stdout); */
+  /*   printf("\n"); */
     
-    lp_rational_sub(&(test_points[0].value.q), &(test_points[0].value.q), &one);
-    //lp_rational_sub(&neg_inf_pt, &one, &one);
+  /*   lp_rational_sub(&(test_points[0].value.q), &(test_points[0].value.q), &one); */
+  /*   //lp_rational_sub(&neg_inf_pt, &one, &one); */
 
-    //lp_value_construct(&(test_points[0]), LP_VALUE_RATIONAL, neg_inf_pt);
+  /*   //lp_value_construct(&(test_points[0]), LP_VALUE_RATIONAL, neg_inf_pt); */
 
-    //lp_rational_destruct(&one);
+  /*   //lp_rational_destruct(&one); */
 
-    assert(0);
+  /*   assert(0); */
 
-  } else {
-    printf("type of roots[0] = %u\n", all_roots[0].type);
+  /* } else { */
+  /*   printf("type of roots[0] = %u\n", all_roots[0].type); */
 
-    assert(0);
-  }
+  /*   assert(0); */
+  /* } */
   //assert(is_algebraic(all_roots[0]));
+
+  lp_value_construct(&(test_points[0]), LP_VALUE_MINUS_INFINITY, NULL);
 
   size_t index = 1;
   for (size_t i = 0; i < num_roots - 1; i++) {
