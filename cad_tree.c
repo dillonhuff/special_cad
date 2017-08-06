@@ -318,6 +318,14 @@ lp_value_t* test_points(size_t* num_test_points_ptr,
     /* assert(is_algebraic(current)); */
     /* assert(is_algebraic(next)); */
 
+    printf("checking root normalization of\n");
+    printf("current = ");
+    lp_value_print(&current, stdout);
+    printf("\n");
+    printf("next = ");
+    lp_value_print(&current, stdout);
+    printf("\n");
+
     printf("checking root %zu for normalization before between value call\n", i);
     if (is_algebraic(all_roots[i])) {
       check_normalized(&(all_roots[i].value.a));

@@ -1034,31 +1034,13 @@ void test_constant_conic_sections_unlifted() {
   cs[0] = c1;
   cs[1] = c2;
 
-  clock_t start, end;
-  double cpu_time_used;
-
-  start = clock();
-
   size_t projection_set_size = 0;
   pl_list mc_proj1 =
     mccallum_projection(&projection_set_size, cs, 2);
 
-  end = clock();
-  cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;  
-  
-  printf("Projection set\n");
   print_poly_list(mc_proj1, projection_set_size);
 
-  printf("---------- Time to compute generalized projection = %f\n", cpu_time_used);
-
   // Projection polynomials to be lifted
-
-  size_t num_projection_sets = 2;
-
-  projection_set* projection_sets =
-    (projection_set*)(malloc(sizeof(projection_set)*2));
-  projection_sets[0] = make_projection_set(mc_proj1, projection_set_size);
-  projection_sets[1] = make_projection_set(cs, 2);
 
   printf("about to compute roots\n");
   fflush(stdout);
@@ -1071,6 +1053,7 @@ void test_constant_conic_sections_unlifted() {
 
   printf("# of roots = %zu\n", num_roots);
 
+  
   printf("Checking roots for normalization\n");
   for (size_t i = 0; i < num_roots; i++) {
     if (is_algebraic(all_roots[i])) {
@@ -1085,20 +1068,6 @@ void test_constant_conic_sections_unlifted() {
     test_points(&num_test_points, all_roots, num_roots);
 
   printf("# of test points = %zu\n", num_test_points);
-  
-  /* // Initial empty assignment */
-  /* lp_assignment_t* asg = lp_assignment_new(var_db); */
-
-  /* // Create the root of the CAD tree */
-  /* cad_cell root = make_cad_cell(NULL, 0, NULL); */
-
-  /* // Actually call CAD lifting */
-  /* lift_polynomials(&root, projection_sets, num_projection_sets, asg); */
-
-  /* printf("Final CAD tree\n"); */
-  /* print_cad_tree(&root); */
-
-  /* lp_assignment_destruct(asg); */
   
   lp_polynomial_context_detach(ctx);
 
