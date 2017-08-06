@@ -217,17 +217,14 @@ lp_value_t* test_points(size_t* num_test_points_ptr,
 
     lp_value_t* test_points =
       (lp_value_t*)(malloc(sizeof(lp_value_t)));
+
+    lp_rational_t tmp;
+    lp_rational_construct_from_int(&tmp, 1, 1);
+
+    lp_value_construct(&(test_points[0]), LP_VALUE_RATIONAL, &tmp);
+
+    lp_rational_destruct(&tmp);
     
-    lp_dyadic_rational_t tmp;
-    lp_dyadic_rational_construct_from_int(&tmp, 1, 0);
-
-    lp_algebraic_number_t res;
-    lp_algebraic_number_construct_from_dyadic_rational(&res, &tmp);
-
-    lp_value_construct(&(test_points[0]), LP_VALUE_ALGEBRAIC, &res);
-
-    lp_dyadic_rational_destruct(&tmp);
-
     return test_points;
   }
 
@@ -283,7 +280,7 @@ void lift_polynomials(cad_cell* root,
   printf("\n");
 
   if (num_projection_sets == 0) {
-    //printf("DONE\n");
+    printf("DONE\n");
     return;
   }
 
