@@ -948,7 +948,7 @@ void test_constant_conic_sections() {
   printf("Projection set\n");
   print_poly_list(mc_proj1, projection_set_size);
 
-  printf("---------- Time to compute generalized projection = %f\n", cpu_time_used);
+  printf("---------- Time to compute specific projection = %f\n", cpu_time_used);
 
   // Projection polynomials to be lifted
 
@@ -965,8 +965,15 @@ void test_constant_conic_sections() {
   // Create the root of the CAD tree
   cad_cell root = make_cad_cell(NULL, 0, NULL);
 
+  start = clock();
+  
   // Actually call CAD lifting
   lift_polynomials(&root, projection_sets, num_projection_sets, asg);
+  
+  end = clock();
+  cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;  
+
+  printf("---------- Time to lift specific case = %f\n", cpu_time_used);  
 
   printf("Final CAD tree\n");
   print_cad_tree(&root);
