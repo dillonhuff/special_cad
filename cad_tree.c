@@ -21,6 +21,7 @@ void print_dyadic_info(lp_dyadic_rational_t const * q) {
   
 }
 
+// only a is defined if it is a point
 void check_normalized(lp_algebraic_number_t* a) {
   printf("Checking normalization of ");
   lp_algebraic_number_print(a, stdout);
@@ -39,11 +40,19 @@ void check_normalized(lp_algebraic_number_t* a) {
     printf("\n");
   }
 
+  printf("a info\n");
   print_dyadic_info(&(it.a));
-  print_dyadic_info(&(it.b));
+
+  if (!(it.is_point)) {
+    printf("b info\n");
+    print_dyadic_info(&(it.b));
+  }
 
   assert(dyadic_rational_is_normalized(&(it.a)));
-  assert(dyadic_rational_is_normalized(&(it.b)));
+
+  if (!(it.is_point)) {
+    assert(dyadic_rational_is_normalized(&(it.b)));
+  }
 
   printf("is normalized\n");
 }
@@ -283,6 +292,12 @@ lp_value_t* test_points(size_t* num_test_points_ptr,
   lp_value_construct_none(&(test_points[0]));
   lp_value_get_value_between(&neg_inf, 1, &(all_roots[0]), 1, &(test_points[0]));
 
+  printf("Checking first point normalization\n");
+
+  if (is_algebraic(test_points[0])) {
+    check_normalized(&(test_points[0].value.a));
+  }
+  
   size_t index = 1;
   for (size_t i = 0; i < num_roots - 1; i++) {
     test_points[index] = all_roots[i / 2];
@@ -297,6 +312,11 @@ lp_value_t* test_points(size_t* num_test_points_ptr,
 
     lp_value_construct_none(&(test_points[index]));
     lp_value_get_value_between(&current, 1, &next, 1, &(test_points[index]));
+
+    printf("checking midpoint %zu for normalization\n", index);
+    if (is_algebraic(test_points[index])) {
+      check_normalized(&(test_points[index].value.a));
+    }
     
     index++;
   }
@@ -309,12 +329,23 @@ lp_value_t* test_points(size_t* num_test_points_ptr,
   lp_value_construct_none(&(test_points[*num_test_points_ptr - 1]));
   lp_value_get_value_between(&(all_roots[num_roots - 1]), 1, &pos_inf, 1, &(test_points[*num_test_points_ptr - 1]));
 
+  printf("checking positive endpoint %zu for normalization\n", index);
+  if (is_algebraic(test_points[*num_test_points_ptr - 1])) {
+    check_normalized(&(test_points[*num_test_points_ptr - 1].value.a));
+  }
+  
+  printf("Testing all test points for normalization\n");
+
   // Check that all points are normalized
   for (size_t i = 0; i < *num_test_points_ptr; i++) {
+
     if (is_algebraic(test_points[i])) {
+      printf("Checking %zu for normalization\n", i);
       check_normalized(&(test_points[i].value.a));
     }
   }
+
+  printf("All test points are normalized\n");
 
   return test_points;
 }
@@ -348,6 +379,15 @@ void lift_polynomials(cad_cell* root,
     all_sorted_roots(&num_roots, asg, p.polynomials, p.length);
 
   printf("# of roots = %zu\n", num_roots);
+
+  printf("Checking roots for normalization\n");
+  for (size_t i = 0; i < num_roots; i++) {
+    if (is_algebraic(all_roots[i])) {
+      check_normalized(&(all_roots[i].value.a));
+    }
+  }
+
+  printf("All roots are normalized\n");
 
   size_t num_test_points = 0;
   lp_value_t* all_test_points =
@@ -391,8 +431,9 @@ void lift_polynomials(cad_cell* root,
 	printf("\n");
       }
 
-      assert(dyadic_rational_is_normalized(&(it.a)));
-      assert(dyadic_rational_is_normalized(&(it.b)));
+      check_normalized(&(all_test_points[i].value.a));
+      /* assert(dyadic_rational_is_normalized(&(it.a))); */
+      /* assert(dyadic_rational_is_normalized(&(it.b))); */
 
     } else {
       printf("NOT ALGEBRAIC\n");
