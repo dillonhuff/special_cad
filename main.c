@@ -980,6 +980,13 @@ void test_constant_conic_sections() {
 
 }
 
+lp_value_t* dyadic_rational_normalization_error_roots() {
+  lp_value_t* roots =
+    (lp_value_t*) malloc(sizeof(lp_value_t)*3);
+
+  return roots;
+}
+
 void test_constant_conic_sections_unlifted() {
   lp_variable_db_t* var_db = lp_variable_db_new();
 
@@ -1047,12 +1054,27 @@ void test_constant_conic_sections_unlifted() {
 
   lp_assignment_t* asg = lp_assignment_new(var_db);
 
-  size_t num_roots = 0;
-  lp_value_t* all_roots =
-    all_sorted_roots(&num_roots, asg, mc_proj1, projection_set_size);
+  //size_t num_roots = 0;
+  size_t num_roots = 3;
+  lp_value_t* all_roots = dyadic_rational_normalization_error_roots();
+    //all_sorted_roots(&num_roots, asg, mc_proj1, projection_set_size);
+
+  //all_roots = build_dyadic_normalization_error_roots();
 
   printf("# of roots = %zu\n", num_roots);
 
+  printf("root[0] = ");
+  lp_value_print(&(all_roots[0]), stdout);
+  printf("\n");
+
+  printf("root[1] = ");
+  lp_value_print(&(all_roots[1]), stdout);
+  printf("\n");
+
+  printf("root[2] = ");
+  lp_value_print(&(all_roots[2]), stdout);
+  printf("\n");
+  
   assert(num_roots > 0);
 
   size_t num_test_points = 0;
