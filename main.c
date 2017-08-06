@@ -1053,21 +1053,45 @@ void test_constant_conic_sections_unlifted() {
 
   printf("# of roots = %zu\n", num_roots);
 
-  
-  printf("Checking roots for normalization\n");
-  for (size_t i = 0; i < num_roots; i++) {
-    if (is_algebraic(all_roots[i])) {
-      check_normalized(&(all_roots[i].value.a));
-    }
+  lp_value_t current = all_roots[1];
+  lp_value_t next = all_roots[2];
+
+  printf("checking root normalization of\n");
+  printf("current = ");
+  lp_value_print(&current, stdout);
+  printf("\n");
+  printf("next = ");
+  lp_value_print(&current, stdout);
+  printf("\n");
+
+  printf("checking root %zu for normalization before between value call\n", i);
+  if (is_algebraic(current)) {
+    check_normalized(&(current.value.a));
   }
 
-  printf("All roots are normalized\n");
+  lp_value_t btwn;
+  lp_value_construct_none(&btwn);
+  lp_value_get_value_between(&current, 1, &next, 1, &btwn);
 
-  size_t num_test_points = 0;
-  lp_value_t* all_test_points =
-    test_points(&num_test_points, all_roots, num_roots);
+  printf("checking root %zu for normalization after between value\n", i);
+  if (is_algebraic(current)) {
+    check_normalized(&(current.value.a)));
+  }
+    
+  /* printf("Checking roots for normalization\n"); */
+  /* for (size_t i = 0; i < num_roots; i++) { */
+  /*   if (is_algebraic(all_roots[i])) { */
+  /*     check_normalized(&(all_roots[i].value.a)); */
+  /*   } */
+  /* } */
 
-  printf("# of test points = %zu\n", num_test_points);
+  /* printf("All roots are normalized\n"); */
+
+  /* size_t num_test_points = 0; */
+  /* lp_value_t* all_test_points = */
+  /*   test_points(&num_test_points, all_roots, num_roots); */
+
+  /* printf("# of test points = %zu\n", num_test_points); */
   
   lp_polynomial_context_detach(ctx);
 
