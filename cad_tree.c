@@ -12,8 +12,8 @@ int dyadic_rational_is_normalized(const lp_dyadic_rational_t* q) {
   return (mpz_sgn(&q->a) == 0 && q->n == 0) || (mpz_scan1(&q->a, 0) == 0 || q->n == 0);
 }
 
-// I think this is the origin of the non-normalized <3*x^2 + (-1*x) + (-1), (3/4, 1)>
-
+// I think this is the origin of the non-normalized: <3*x^2 + (-1*x) + (-1), (3/4, 1)>
+// Actually I think it is this: <3*x^2 + (-1*x) + (-1), (-445/1024, -889/2048)>
 // Non-normalized: <3*x^2 + (-1*x) + (-1), (-11529223823181087261/1024, -1729386645466579267/1024)>
 
 void print_dyadic_info(lp_dyadic_rational_t const * q) {
@@ -26,7 +26,7 @@ void print_dyadic_info(lp_dyadic_rational_t const * q) {
 }
 
 // only a is defined if it is a point
-void check_normalized(lp_algebraic_number_t* a) {
+void check_normalized(lp_algebraic_number_t const * a) {
   printf("Checking normalization of ");
   lp_algebraic_number_print(a, stdout);
   printf("\n");
@@ -314,9 +314,19 @@ lp_value_t* test_points(size_t* num_test_points_ptr,
     /* assert(is_algebraic(current)); */
     /* assert(is_algebraic(next)); */
 
+    printf("checking root %zu for normalization before between value call\n", i);
+    if (is_algebraic(all_roots[i])) {
+      check_normalized(&(all_roots[i].value.a));
+    }
+    
     lp_value_construct_none(&(test_points[index]));
     lp_value_get_value_between(&current, 1, &next, 1, &(test_points[index]));
 
+    printf("checking root %zu for normalization after between value\n", i);
+    if (is_algebraic(all_roots[i])) {
+      check_normalized(&(all_roots[i].value.a));
+    }
+    
     printf("checking midpoint %zu for normalization\n", index);
     if (is_algebraic(test_points[index])) {
       check_normalized(&(test_points[index].value.a));

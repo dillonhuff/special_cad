@@ -1011,8 +1011,7 @@ void test_algebraic_number_copy() {
 
 }
 
-// I think this is the origin of the non-normalized <3*x^2 + (-1*x) + (-1), (3/4, 1)>
-
+// Actually I think it is this: <3*x^2 + (-1*x) + (-1), (-445/1024, -889/2048)>
 // Non-normalized: <3*x^2 + (-1*x) + (-1), (-11529223823181087261/1024, -1729386645466579267/1024)>
 
 void test_algebraic_number_refinement() {
@@ -1027,6 +1026,31 @@ void test_algebraic_number_refinement() {
   lp_upolynomial_print(poly, stdout);
   printf("\n");
 
+  lp_dyadic_rational_t num;
+  lp_dyadic_rational_construct_from_int(&num, -445, 10);
+
+  lp_dyadic_rational_t denum;
+  lp_dyadic_rational_construct_from_int(&denum, -889, 11);
+
+  lp_dyadic_interval_t it;
+  lp_dyadic_interval_construct(&it, &num, 1, &denum, 1);
+
+  lp_dyadic_interval_print(&it, stdout);
+  printf("\n");
+
+  lp_algebraic_number_t algnum;
+  lp_algebraic_number_construct(&algnum, poly, &it);
+
+  lp_algebraic_number_print(&algnum, stdout);
+  printf("\n");
+
+  for (size_t i = 0; i < 20; i++) {
+    lp_algebraic_number_refine(&algnum);
+
+    lp_algebraic_number_print(&algnum, stdout);
+    printf("\n");
+  }
+  
   /* printf("Degree of poly = %zu\n", deg); */
 
   /* lp_upolynomial_print(poly, stdout); */
@@ -1040,17 +1064,17 @@ void test_algebraic_number_refinement() {
 
 int main() {
   test_algebraic_number_refinement();
-  /* test_algebraic_number_copy(); */
-  /* test_mccallum_projection_only_resultants(); */
-  /* isolate_multivariate_roots(); */
-  /* test_all_coefficients(); */
-  /* test_all_discriminants(); */
-  /* test_conic_sections(); */
-  /* test_constant_conic_sections(); */
+  test_algebraic_number_copy();
+  test_mccallum_projection_only_resultants();
+  isolate_multivariate_roots();
+  test_all_coefficients();
+  test_all_discriminants();
+  test_conic_sections();
+  test_constant_conic_sections();
 
-  /* for (int i = 0; i < 100; i++) { */
+  for (int i = 0; i < 100; i++) {
     
-  /*   test_all_discriminants(); */
-  /* } */
+    test_all_discriminants();
+  }
 
 }

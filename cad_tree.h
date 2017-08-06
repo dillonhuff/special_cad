@@ -50,4 +50,4 @@ size_t is_rational(const lp_value_t val);
 
 size_t count_cells(cad_cell const * root);
 
-void check_normalized(lp_algebraic_number_t* a);
+void check_normalized(lp_algebraic_number_t const * a);
