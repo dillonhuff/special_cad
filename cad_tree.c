@@ -299,42 +299,45 @@ lp_value_t* test_points(size_t* num_test_points_ptr,
     /* lp_dyadic_rational_t* dp = */
     /*   (lp_dyadic_rational_t*)(malloc(sizeof(lp_dyadic_rational_t))); */
 
-    lp_dyadic_rational_t cp;
-    lp_dyadic_rational_construct(&cp);
-    lp_algebraic_number_get_dyadic_midpoint(&(current.value.a), &cp);
+    /* lp_dyadic_rational_t cp; */
+    /* lp_dyadic_rational_construct(&cp); */
+    /* lp_algebraic_number_get_dyadic_midpoint(&(current.value.a), &cp); */
 
-    lp_dyadic_rational_t np;
-    lp_dyadic_rational_construct(&np);
-    lp_algebraic_number_get_dyadic_midpoint(&(next.value.a), &np);
+    /* lp_dyadic_rational_t np; */
+    /* lp_dyadic_rational_construct(&np); */
+    /* lp_algebraic_number_get_dyadic_midpoint(&(next.value.a), &np); */
 
-    lp_dyadic_rational_t sum;
-    lp_dyadic_rational_construct(&sum);
-    lp_dyadic_rational_add(&sum, &cp, &np);
+    /* lp_dyadic_rational_t sum; */
+    /* lp_dyadic_rational_construct(&sum); */
+    /* lp_dyadic_rational_add(&sum, &cp, &np); */
 
-    lp_dyadic_rational_t* mid =
-      (lp_dyadic_rational_t*)(malloc(sizeof(lp_dyadic_rational_t)));
-    lp_dyadic_rational_construct(mid);
-    lp_dyadic_rational_div_2exp(mid, &sum, 1);
+    /* lp_dyadic_rational_t* mid = */
+    /*   (lp_dyadic_rational_t*)(malloc(sizeof(lp_dyadic_rational_t))); */
+    /* lp_dyadic_rational_construct(mid); */
+    /* lp_dyadic_rational_div_2exp(mid, &sum, 1); */
 
-    printf("midpoint = ");
-    lp_dyadic_rational_print(mid, stdout);
-    printf("\n");
+    /* printf("midpoint = "); */
+    /* lp_dyadic_rational_print(mid, stdout); */
+    /* printf("\n"); */
 
     // NOTE: I'm not sure whether I can just use this as a value or whether it
     // needs to be allocated explicitly to survive in the lp_value_t
-    lp_algebraic_number_t* mid_a =
-      (lp_algebraic_number_t*)(malloc(sizeof(lp_algebraic_number_t)));
-    lp_algebraic_number_construct_from_dyadic_rational(mid_a, mid);
+    /* lp_algebraic_number_t* mid_a = */
+    /*   (lp_algebraic_number_t*)(malloc(sizeof(lp_algebraic_number_t))); */
+    /* lp_algebraic_number_construct_from_dyadic_rational(mid_a, mid); */
 
-    printf("midpoint = ");
-    lp_algebraic_number_print(mid_a, stdout);
-    printf("\n");
+    /* printf("midpoint = "); */
+    /* lp_algebraic_number_print(mid_a, stdout); */
+    /* printf("\n"); */
     
-    lp_dyadic_rational_destruct(&sum);
-    lp_dyadic_rational_destruct(&cp);
-    lp_dyadic_rational_destruct(&np);
+    /* lp_dyadic_rational_destruct(&sum); */
+    /* lp_dyadic_rational_destruct(&cp); */
+    /* lp_dyadic_rational_destruct(&np); */
+
+    lp_value_construct_none(&(test_points[index]));
+    lp_value_get_value_between(&current, 1, &next, 1, &(test_points[index]));
     
-    lp_value_construct(&(test_points[index]), LP_VALUE_ALGEBRAIC, mid_a);
+      //lp_value_construct(&(test_points[index]), LP_VALUE_ALGEBRAIC, mid_a);
     index++;
   }
 

@@ -612,9 +612,10 @@ void test_all_discriminants() {
 
   for (size_t i = 0; i < num_test_points; i++) {
 
-    assert(all_test_points[i].type == LP_VALUE_ALGEBRAIC);
+    //assert(all_test_points[i].type == LP_VALUE_ALGEBRAIC);
     
-    lp_algebraic_number_print(&(all_test_points[i].value.a), stdout);
+    //lp_algebraic_number_print(&(all_test_points[i].value.a), stdout);
+    lp_value_print(&(all_test_points[i]), stdout);
 
     printf("\n");
   }
