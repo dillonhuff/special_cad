@@ -284,7 +284,13 @@ lp_value_t* test_points(size_t* num_test_points_ptr,
   /* } */
   //assert(is_algebraic(all_roots[0]));
 
-  lp_value_construct(&(test_points[0]), LP_VALUE_MINUS_INFINITY, NULL);
+  lp_value_t neg_inf;
+  lp_value_construct(&neg_inf, LP_VALUE_MINUS_INFINITY, NULL);
+
+  lp_value_construct_none(&(test_points[0]));
+  lp_value_get_value_between(&neg_inf, 1, &(all_roots[0]), 1, &(test_points[0]));
+
+  //lp_value_construct(&(test_points[0]), LP_VALUE_MINUS_INFINITY, NULL);
 
   size_t index = 1;
   for (size_t i = 0; i < num_roots - 1; i++) {
