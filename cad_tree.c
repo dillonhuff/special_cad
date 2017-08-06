@@ -12,6 +12,38 @@ int dyadic_rational_is_normalized(const lp_dyadic_rational_t* q) {
   return (mpz_sgn(&q->a) == 0 && q->n == 0) || (mpz_scan1(&q->a, 0) == 0 || q->n == 0);
 }
 
+void print_dyadic_info(lp_dyadic_rational_t const * q) {
+  printf("integer = ");
+  lp_integer_print(&(q->a), stdout);
+  printf("\n");
+  printf("n = %lu\n", q->n);
+  printf("is normalized = %d\n", dyadic_rational_is_normalized(q));
+  
+}
+
+void check_normalized(lp_algebraic_number_t* a) {
+  lp_dyadic_interval_t it = a->I;
+  printf("Interval = ");
+  lp_dyadic_interval_print(&it, stdout);
+  printf("\n");
+
+  if (a->f == 0) {
+    printf("f == 0\n");
+  } else {
+    printf("f = ");
+    lp_upolynomial_print(a->f, stdout);
+    printf("\n");
+  }
+
+  print_dyadic_info(&(it.a));
+  print_dyadic_info(&(it.b));
+
+  assert(dyadic_rational_is_normalized(&(it.a)));
+  assert(dyadic_rational_is_normalized(&(it.b)));
+
+  printf("is normalized\n");
+}
+
 void algnum_add(lp_algebraic_number_t* res,
 		lp_algebraic_number_t const * a,
 		lp_algebraic_number_t const * b) {
@@ -272,6 +304,13 @@ lp_value_t* test_points(size_t* num_test_points_ptr,
 
   lp_value_construct_none(&(test_points[*num_test_points_ptr - 1]));
   lp_value_get_value_between(&(all_roots[num_roots - 1]), 1, &pos_inf, 1, &(test_points[*num_test_points_ptr - 1]));
+
+  // Check that all points are normalized
+  for (size_t i = 0; i < *num_test_points_ptr; i++) {
+    if (is_algebraic(test_points[i])) {
+      check_normalized(&(test_points[i].value.a));
+    }
+  }
 
   return test_points;
 }
