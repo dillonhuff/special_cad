@@ -730,6 +730,17 @@ void test_mccallum_projection() {
   /* print_poly_list(mc_proj2, proj2_size); */
 
   /* assert(proj2_size == 3); */
+
+  lp_integer_destruct(&one);
+  lp_integer_destruct(&two);
+
+  for (size_t i = 0; i < proj1_size; i++) {
+    lp_polynomial_destruct(mc_proj1[i]);
+  }
+
+  free(mc_proj1);
+
+  //free(mc_proj2);
 }
 
 void test_conic_sections() {
@@ -878,7 +889,7 @@ int main() {
   //test_conic_sections();
   //test_constant_conic_sections();
 
-  for (int i = 0; i < 1000; i++) {
+  for (int i = 0; i < 100; i++) {
     test_mccallum_projection();
   }
 
