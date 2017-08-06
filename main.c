@@ -980,7 +980,39 @@ void test_constant_conic_sections() {
 
 }
 
+void test_algebraic_number_copy() {
+
+  lp_dyadic_rational_t d_one;
+  lp_dyadic_rational_construct_from_int(&d_one, 2, 0);
+
+  printf("Dyadic rationals\n");
+
+  lp_dyadic_rational_print(&d_one, stdout);
+  printf("\n");
+
+  lp_algebraic_number_t a_one;
+  lp_algebraic_number_construct_from_dyadic_rational(&a_one, &d_one);
+
+  printf("Algebraic numbers\n");
+
+  lp_algebraic_number_print(&a_one, stdout);
+  printf("\n");
+  
+  lp_algebraic_number_t a_cpy;
+  lp_algebraic_number_construct_copy(&a_cpy, &a_one);
+
+  lp_algebraic_number_print(&a_cpy, stdout);
+  printf("\n");
+  
+  lp_algebraic_number_destruct(&a_one);
+  lp_algebraic_number_destruct(&a_cpy);
+
+  lp_dyadic_rational_destruct(&d_one);
+
+}
+
 int main() {
+  test_algebraic_number_copy();
   test_mccallum_projection_only_resultants();
   isolate_multivariate_roots();
   test_all_coefficients();

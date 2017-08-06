@@ -336,6 +336,7 @@ void lift_polynomials(cad_cell* root,
     if (is_algebraic(all_test_points[i])) {
       printf("IS ALGEBRAIC\n");
       lp_dyadic_interval_t it = all_test_points[i].value.a.I;
+      printf("Interval = ");
       lp_dyadic_interval_print(&it, stdout);
       printf("\n");
 
