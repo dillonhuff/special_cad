@@ -321,6 +321,12 @@ void lift_polynomials(cad_cell* root,
 
     // TODO: Actuall construct new cells
     children[i] = make_cad_cell(root, 0, &(all_test_points[i]));
+
+    printf("lp value type = %u\n", all_test_points[i].type);
+    printf("lp value = ");
+    lp_value_print(&(all_test_points[0]), stdout);
+    printf("\n");
+
     lp_assignment_set_value(asg, next_var, &(all_test_points[i]));
 
     lift_polynomials(&(children[i]), sets_left, num_projection_sets - 1, asg);
