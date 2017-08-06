@@ -1064,7 +1064,6 @@ void test_constant_conic_sections_unlifted() {
   lp_value_print(&current, stdout);
   printf("\n");
 
-  printf("checking root %zu for normalization before between value call\n", i);
   if (is_algebraic(current)) {
     check_normalized(&(current.value.a));
   }
@@ -1073,9 +1072,8 @@ void test_constant_conic_sections_unlifted() {
   lp_value_construct_none(&btwn);
   lp_value_get_value_between(&current, 1, &next, 1, &btwn);
 
-  printf("checking root %zu for normalization after between value\n", i);
   if (is_algebraic(current)) {
-    check_normalized(&(current.value.a)));
+    check_normalized(&(current.value.a));;
   }
     
   /* printf("Checking roots for normalization\n"); */
