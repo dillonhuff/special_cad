@@ -1293,14 +1293,14 @@ void test_algebraic_number_refinement() {
 }
 
 int main() {
-  //test_algebraic_number_refinement();
-  /* test_algebraic_number_copy(); */
-  /* test_mccallum_projection_only_resultants(); */
-  /* isolate_multivariate_roots(); */
-  /* test_all_coefficients(); */
-  /* test_all_discriminants(); */
-  /* test_conic_sections(); */
-  //test_constant_conic_sections();
+  test_algebraic_number_refinement();
+  test_algebraic_number_copy();
+  test_mccallum_projection_only_resultants();
+  isolate_multivariate_roots();
+  test_all_coefficients();
+  test_all_discriminants();
+  test_conic_sections();
+  test_constant_conic_sections();
   test_constant_conic_sections_unlifted();
 
   /* for (int i = 0; i < 100; i++) { */

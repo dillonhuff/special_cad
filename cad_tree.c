@@ -308,8 +308,10 @@ lp_value_t* test_points(size_t* num_test_points_ptr,
     index++;
 
     // Construct midpoint
-    lp_value_t current = all_roots[i];
-    lp_value_t next = all_roots[i + 1];
+    lp_value_t current;// = all_roots[i];
+    lp_value_construct_copy(&current, &(all_roots[i]));
+    lp_value_t next;// = all_roots[i + 1];
+    lp_value_construct_copy(&next, &(all_roots[i + 1]));
 
     printf("next value = ");
     lp_value_print(&next, stdout);
