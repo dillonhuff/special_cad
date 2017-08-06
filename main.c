@@ -1018,10 +1018,39 @@ lp_value_t* dyadic_rational_normalization_error_roots() {
   lp_algebraic_number_construct(&algnum_1, poly, &it);
   lp_value_construct(&(roots[1]), LP_VALUE_ALGEBRAIC, &algnum_1);
 
+
+  lp_upolynomial_t* x2_2 = lp_upolynomial_construct_power(lp_Z, 2, 61);
+  lp_upolynomial_t* mx_2 = lp_upolynomial_construct_power(lp_Z, 1, 8);
+  lp_upolynomial_t* mone_2 = lp_upolynomial_construct_power(lp_Z, 0, -8);
+
+  lp_upolynomial_t* poly1_2 = lp_upolynomial_add(x2_2, mx_2);
+  lp_upolynomial_t* poly_2 = lp_upolynomial_add(poly1_2, mone_2);
+
+  lp_upolynomial_print(poly_2, stdout);
+  printf("\n");
+
+  lp_dyadic_rational_t num_2;
+  lp_dyadic_rational_construct_from_int(&num_2, -889, 11);
+
+  lp_dyadic_rational_t denum_2;
+  lp_dyadic_rational_construct_from_int(&denum_2, -111, 8);
+
+  lp_dyadic_interval_t it_2;
+  lp_dyadic_interval_construct(&it_2, &num_2, 1, &denum_2, 1);
+
+  lp_dyadic_interval_print(&it, stdout);
+  printf("\n");
+
+  lp_algebraic_number_t algnum_2;
+  lp_algebraic_number_construct(&algnum_2, poly_2, &it_2);
+  lp_value_construct(&(roots[2]), LP_VALUE_ALGEBRAIC, &algnum_2);
+
+  lp_algebraic_number_print(&algnum_2, stdout);
+  printf("\n");
   
   /* lp_algebraic_number_t algnum_2; */
   /* lp_algebraic_number_construct(&algnum_2, poly, &it); */
-  /* lp_value_construct(&(roots[2]), LP_VALUE_ALGEBRAIC, &algnum_2); */
+
   
   return roots;
 }
