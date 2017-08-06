@@ -1060,14 +1060,10 @@ void test_constant_conic_sections_unlifted() {
 
   *num_test_points_ptr = 2*num_roots + 1;
 
-  lp_value_t* test_points =
-    (lp_value_t*)(malloc(sizeof(lp_value_t)*(*num_test_points_ptr)));
-
-  size_t index = 1;
+  //size_t index = 1;
   for (size_t i = 0; i < num_roots - 1; i++) {
 
-    /* test_points[index] = all_roots[i / 2]; */
-    index++;
+    //index++;
 
     // Construct midpoint
     lp_value_t current = all_roots[i];
@@ -1093,31 +1089,16 @@ void test_constant_conic_sections_unlifted() {
     lp_value_t btwn;
     lp_value_construct_none(&btwn);
     lp_value_get_value_between(&current, 1, &next, 1, &btwn);
-    //lp_value_construct_none(&(test_points[index]));
-    //lp_value_get_value_between(&current, 1, &next, 1, &(test_points[index]));
 
     printf("checking root %zu for normalization after between value\n", i);
     if (is_algebraic(all_roots[i])) {
       check_normalized(&(all_roots[i].value.a));
     }
-    
-    printf("checking midpoint %zu for normalization\n", index);
-    
-    index++;
+
+    //printf("checking midpoint %zu for normalization\n", index);
+
+    //index++;
   }
-
-  //test_points[*num_test_points_ptr - 2] = all_roots[num_roots - 1];
-
-  //printf("Testing all test points for normalization\n");
-
-  // Check that all points are normalized
-  /* for (size_t i = 0; i < *num_test_points_ptr; i++) { */
-
-  /*   if (is_algebraic(test_points[i])) { */
-  /*     printf("Checking %zu for normalization\n", i); */
-  /*     check_normalized(&(test_points[i].value.a)); */
-  /*   } */
-  /* } */
 
   printf("DONE\n");
   assert(0);
