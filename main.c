@@ -1140,12 +1140,17 @@ void test_constant_conic_sections_unlifted() {
   lp_value_construct_none(&btwn1);
   lp_value_get_value_between(&current, 1, &next, 1, &btwn1);
 
-  printf("checking root %d for normalization after between value\n", 1);
-  if (is_algebraic(all_roots[1])) {
-    check_normalized(&(all_roots[1].value.a));
-  }
+  /* printf("checking root %d for normalization after between value\n", 1); */
+  /* if (is_algebraic(all_roots[1])) { */
+  /*   check_normalized(&(all_roots[1].value.a)); */
+  /* } */
 
   // end second iteration
+
+  for (size_t i = 0; i < num_roots; i++) {
+    lp_value_t dummy;
+    lp_value_construct_copy(&dummy, &(all_roots[i]));
+  }
 
   printf("DONE\n");
 
