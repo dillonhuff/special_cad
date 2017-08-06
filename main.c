@@ -1063,17 +1063,17 @@ void test_constant_conic_sections_unlifted() {
   lp_value_t* test_points =
     (lp_value_t*)(malloc(sizeof(lp_value_t)*(*num_test_points_ptr)));
 
-  lp_value_t neg_inf;
-  lp_value_construct(&neg_inf, LP_VALUE_MINUS_INFINITY, NULL);
+  /* lp_value_t neg_inf; */
+  /* lp_value_construct(&neg_inf, LP_VALUE_MINUS_INFINITY, NULL); */
 
-  lp_value_construct_none(&(test_points[0]));
-  lp_value_get_value_between(&neg_inf, 1, &(all_roots[0]), 1, &(test_points[0]));
+  /* lp_value_construct_none(&(test_points[0])); */
+  /* lp_value_get_value_between(&neg_inf, 1, &(all_roots[0]), 1, &(test_points[0])); */
 
-  printf("Checking first point normalization\n");
+  /* printf("Checking first point normalization\n"); */
 
-  if (is_algebraic(test_points[0])) {
-    check_normalized(&(test_points[0].value.a));
-  }
+  /* if (is_algebraic(test_points[0])) { */
+  /*   check_normalized(&(test_points[0].value.a)); */
+  /* } */
   
   size_t index = 1;
   for (size_t i = 0; i < num_roots - 1; i++) {
@@ -1122,16 +1122,16 @@ void test_constant_conic_sections_unlifted() {
 
   test_points[*num_test_points_ptr - 2] = all_roots[num_roots - 1];
 
-  lp_value_t pos_inf;
-  lp_value_construct(&pos_inf, LP_VALUE_PLUS_INFINITY, NULL);
+  /* lp_value_t pos_inf; */
+  /* lp_value_construct(&pos_inf, LP_VALUE_PLUS_INFINITY, NULL); */
 
-  lp_value_construct_none(&(test_points[*num_test_points_ptr - 1]));
-  lp_value_get_value_between(&(all_roots[num_roots - 1]), 1, &pos_inf, 1, &(test_points[*num_test_points_ptr - 1]));
+  /* lp_value_construct_none(&(test_points[*num_test_points_ptr - 1])); */
+  /* lp_value_get_value_between(&(all_roots[num_roots - 1]), 1, &pos_inf, 1, &(test_points[*num_test_points_ptr - 1])); */
 
-  printf("checking positive endpoint %zu for normalization\n", index);
-  if (is_algebraic(test_points[*num_test_points_ptr - 1])) {
-    check_normalized(&(test_points[*num_test_points_ptr - 1].value.a));
-  }
+  /* printf("checking positive endpoint %zu for normalization\n", index); */
+  /* if (is_algebraic(test_points[*num_test_points_ptr - 1])) { */
+  /*   check_normalized(&(test_points[*num_test_points_ptr - 1].value.a)); */
+  /* } */
   
   printf("Testing all test points for normalization\n");
 
@@ -1143,6 +1143,9 @@ void test_constant_conic_sections_unlifted() {
       check_normalized(&(test_points[i].value.a));
     }
   }
+
+  printf("DONE\n");
+  assert(0);
   
   /* lp_value_t current = all_roots[1]; */
   /* lp_value_t next = all_roots[2]; */
