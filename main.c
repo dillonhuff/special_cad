@@ -981,15 +981,16 @@ void test_constant_conic_sections() {
 }
 
 int main() {
-  //isolate_multivariate_roots();
-  //test_all_coefficients();
-  // test_all_discriminants();
-  //test_conic_sections();
+  test_mccallum_projection_only_resultants();
+  isolate_multivariate_roots();
+  test_all_coefficients();
+  test_all_discriminants();
+  test_conic_sections();
   //test_constant_conic_sections();
 
-  for (int i = 0; i < 100; i++) {
-    //test_mccallum_projection_only_resultants();
-    test_all_discriminants();
-  }
+  /* for (int i = 0; i < 100; i++) { */
+    
+  /*   test_all_discriminants(); */
+  /* } */
 
 }
