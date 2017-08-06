@@ -1060,7 +1060,7 @@ void test_constant_conic_sections_unlifted() {
 
   *num_test_points_ptr = 2*num_roots + 1;
 
-  // First iteratoin
+  // First iteration
 
   // Construct midpoint
   lp_value_t current = all_roots[0];
@@ -1091,8 +1091,8 @@ void test_constant_conic_sections_unlifted() {
   if (is_algebraic(all_roots[0])) {
     check_normalized(&(all_roots[0].value.a));
   }
-  
-  // second iteration
+
+  // Second iteration
 
   // Construct midpoint
   current = all_roots[1];
@@ -1124,41 +1124,7 @@ void test_constant_conic_sections_unlifted() {
     check_normalized(&(all_roots[1].value.a));
   }
 
-
   // end second iteration
-
-  /* for (size_t i = 0; i < num_roots - 1; i++) { */
-
-  /*   // Construct midpoint */
-  /*   lp_value_t current = all_roots[i]; */
-  /*   lp_value_t next = all_roots[i + 1]; */
-
-  /*   printf("next value = "); */
-  /*   lp_value_print(&next, stdout); */
-  /*   printf("\n"); */
-
-  /*   printf("checking root normalization of\n"); */
-  /*   printf("current = "); */
-  /*   lp_value_print(&current, stdout); */
-  /*   printf("\n"); */
-  /*   printf("next = "); */
-  /*   lp_value_print(&current, stdout); */
-  /*   printf("\n"); */
-
-  /*   printf("checking root %zu for normalization before between value call\n", i); */
-  /*   if (is_algebraic(all_roots[i])) { */
-  /*     check_normalized(&(all_roots[i].value.a)); */
-  /*   } */
-
-  /*   lp_value_t btwn; */
-  /*   lp_value_construct_none(&btwn); */
-  /*   lp_value_get_value_between(&current, 1, &next, 1, &btwn); */
-
-  /*   printf("checking root %zu for normalization after between value\n", i); */
-  /*   if (is_algebraic(all_roots[i])) { */
-  /*     check_normalized(&(all_roots[i].value.a)); */
-  /*   } */
-  /* } */
 
   printf("DONE\n");
   assert(0);
