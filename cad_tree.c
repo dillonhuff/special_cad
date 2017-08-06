@@ -238,59 +238,11 @@ lp_value_t* test_points(size_t* num_test_points_ptr,
   lp_value_t* test_points =
     (lp_value_t*)(malloc(sizeof(lp_value_t)*(*num_test_points_ptr)));
 
-  /* if (is_algebraic(all_roots[0])) { */
-
-  /*   lp_algebraic_number_t neg_inf_pt; */
-  /*   minus_one(&neg_inf_pt, &(all_roots[0].value.a)); */
-
-  /*   printf("Minus inf point = "); */
-  /*   lp_algebraic_number_print(&neg_inf_pt, stdout); */
-  /*   printf("\n"); */
-
-  /*   lp_value_construct(&(test_points[0]), LP_VALUE_ALGEBRAIC, &neg_inf_pt); */
-
-  /* } else if (is_rational(all_roots[0])) { */
-  /*   lp_rational_t one; */
-  /*   lp_rational_construct(&one); */
-  /*   lp_rational_construct_from_int(&one, 1, 1); */
-
-  /*   //lp_rational_t* neg_inf_pt = */
-  /*     //(lp_rational_t*) malloc(sizeof(lp_rational_t)); */
-  /*   lp_rational_t neg_inf_pt; */
-  /*   lp_rational_construct(&neg_inf_pt); */
-  /*   lp_rational_construct_from_int(&neg_inf_pt, 1, 1); */
-
-  /*   printf("Rational value = "); */
-  /*   lp_rational_print(&(test_points[0].value.q), stdout); */
-  /*   printf("\n"); */
-
-  /*   printf("Rational value = "); */
-  /*   lp_rational_print(&one, stdout); */
-  /*   printf("\n"); */
-    
-  /*   lp_rational_sub(&(test_points[0].value.q), &(test_points[0].value.q), &one); */
-  /*   //lp_rational_sub(&neg_inf_pt, &one, &one); */
-
-  /*   //lp_value_construct(&(test_points[0]), LP_VALUE_RATIONAL, neg_inf_pt); */
-
-  /*   //lp_rational_destruct(&one); */
-
-  /*   assert(0); */
-
-  /* } else { */
-  /*   printf("type of roots[0] = %u\n", all_roots[0].type); */
-
-  /*   assert(0); */
-  /* } */
-  //assert(is_algebraic(all_roots[0]));
-
   lp_value_t neg_inf;
   lp_value_construct(&neg_inf, LP_VALUE_MINUS_INFINITY, NULL);
 
   lp_value_construct_none(&(test_points[0]));
   lp_value_get_value_between(&neg_inf, 1, &(all_roots[0]), 1, &(test_points[0]));
-
-  //lp_value_construct(&(test_points[0]), LP_VALUE_MINUS_INFINITY, NULL);
 
   size_t index = 1;
   for (size_t i = 0; i < num_roots - 1; i++) {
@@ -304,61 +256,28 @@ lp_value_t* test_points(size_t* num_test_points_ptr,
     assert(is_algebraic(current));
     assert(is_algebraic(next));
 
-    /* lp_dyadic_rational_t* dp = */
-    /*   (lp_dyadic_rational_t*)(malloc(sizeof(lp_dyadic_rational_t))); */
-
-    /* lp_dyadic_rational_t cp; */
-    /* lp_dyadic_rational_construct(&cp); */
-    /* lp_algebraic_number_get_dyadic_midpoint(&(current.value.a), &cp); */
-
-    /* lp_dyadic_rational_t np; */
-    /* lp_dyadic_rational_construct(&np); */
-    /* lp_algebraic_number_get_dyadic_midpoint(&(next.value.a), &np); */
-
-    /* lp_dyadic_rational_t sum; */
-    /* lp_dyadic_rational_construct(&sum); */
-    /* lp_dyadic_rational_add(&sum, &cp, &np); */
-
-    /* lp_dyadic_rational_t* mid = */
-    /*   (lp_dyadic_rational_t*)(malloc(sizeof(lp_dyadic_rational_t))); */
-    /* lp_dyadic_rational_construct(mid); */
-    /* lp_dyadic_rational_div_2exp(mid, &sum, 1); */
-
-    /* printf("midpoint = "); */
-    /* lp_dyadic_rational_print(mid, stdout); */
-    /* printf("\n"); */
-
-    // NOTE: I'm not sure whether I can just use this as a value or whether it
-    // needs to be allocated explicitly to survive in the lp_value_t
-    /* lp_algebraic_number_t* mid_a = */
-    /*   (lp_algebraic_number_t*)(malloc(sizeof(lp_algebraic_number_t))); */
-    /* lp_algebraic_number_construct_from_dyadic_rational(mid_a, mid); */
-
-    /* printf("midpoint = "); */
-    /* lp_algebraic_number_print(mid_a, stdout); */
-    /* printf("\n"); */
-    
-    /* lp_dyadic_rational_destruct(&sum); */
-    /* lp_dyadic_rational_destruct(&cp); */
-    /* lp_dyadic_rational_destruct(&np); */
-
     lp_value_construct_none(&(test_points[index]));
     lp_value_get_value_between(&current, 1, &next, 1, &(test_points[index]));
     
-      //lp_value_construct(&(test_points[index]), LP_VALUE_ALGEBRAIC, mid_a);
     index++;
   }
 
   test_points[*num_test_points_ptr - 2] = all_roots[num_roots - 1];
 
-  lp_algebraic_number_t pos_inf_pt;
-  plus_one(&pos_inf_pt, &(all_roots[num_roots - 1].value.a));
+  lp_value_t pos_inf;
+  lp_value_construct(&pos_inf, LP_VALUE_PLUS_INFINITY, NULL);
 
-  printf("Pos inf point = ");
-  lp_algebraic_number_print(&pos_inf_pt, stdout);
-  printf("\n");
+  lp_value_construct_none(&(test_points[*num_test_points_ptr - 1]));
+  lp_value_get_value_between(&(all_roots[num_roots - 1]), 1, &pos_inf, 1, &(test_points[*num_test_points_ptr - 1]));
+  
+  /* lp_algebraic_number_t pos_inf_pt; */
+  /* plus_one(&pos_inf_pt, &(all_roots[num_roots - 1].value.a)); */
 
-  lp_value_construct(&(test_points[*num_test_points_ptr - 1]), LP_VALUE_ALGEBRAIC, &pos_inf_pt);
+  /* printf("Pos inf point = "); */
+  /* lp_algebraic_number_print(&pos_inf_pt, stdout); */
+  /* printf("\n"); */
+
+  //lp_value_construct(&(test_points[*num_test_points_ptr - 1]), LP_VALUE_ALGEBRAIC, &pos_inf_pt);
 
   return test_points;
 }
