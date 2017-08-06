@@ -253,8 +253,8 @@ lp_value_t* test_points(size_t* num_test_points_ptr,
     lp_value_t current = all_roots[i];
     lp_value_t next = all_roots[i + 1];
 
-    assert(is_algebraic(current));
-    assert(is_algebraic(next));
+    /* assert(is_algebraic(current)); */
+    /* assert(is_algebraic(next)); */
 
     lp_value_construct_none(&(test_points[index]));
     lp_value_get_value_between(&current, 1, &next, 1, &(test_points[index]));
