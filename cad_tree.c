@@ -283,6 +283,7 @@ void lift_polynomials(cad_cell* root,
   printf("\n");
 
   if (num_projection_sets == 0) {
+    //printf("DONE\n");
     return;
   }
 
@@ -292,6 +293,9 @@ void lift_polynomials(cad_cell* root,
   lp_variable_t next_var = lp_polynomial_top_variable(p.polynomials[0]);
 
   projection_set* sets_left = projection_sets + 1;
+
+  printf("about to compute roots\n");
+  fflush(stdout);
 
   size_t num_roots = 0;
   lp_value_t* all_roots =
@@ -307,6 +311,8 @@ void lift_polynomials(cad_cell* root,
 
   cad_cell* children =
     (cad_cell*)(malloc(sizeof(cad_cell) * num_test_points));
+
+  fflush(stdout);
 
   for (size_t i = 0; i < num_test_points; i++) {
 
