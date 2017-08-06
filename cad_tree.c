@@ -6,6 +6,12 @@
 #include <poly/polynomial.h>
 #include <poly/upolynomial.h>
 
+// Copied in from libpoly/src/number/dyadic_rational.h
+static inline
+int dyadic_rational_is_normalized(const lp_dyadic_rational_t* q) {
+  return (mpz_sgn(&q->a) == 0 && q->n == 0) || (mpz_scan1(&q->a, 0) == 0 || q->n == 0);
+}
+
 void algnum_add(lp_algebraic_number_t* res,
 		lp_algebraic_number_t const * a,
 		lp_algebraic_number_t const * b) {
@@ -324,8 +330,21 @@ void lift_polynomials(cad_cell* root,
 
     printf("lp value type = %u\n", all_test_points[i].type);
     printf("lp value = ");
-    lp_value_print(&(all_test_points[0]), stdout);
+    lp_value_print(&(all_test_points[i]), stdout);
     printf("\n");
+
+    if (is_algebraic(all_test_points[i])) {
+      printf("IS ALGEBRAIC\n");
+      lp_dyadic_interval_t it = all_test_points[i].value.a.I;
+      lp_dyadic_interval_print(&it, stdout);
+      printf("\n");
+
+      assert(dyadic_rational_is_normalized(&(it.a)));
+      assert(dyadic_rational_is_normalized(&(it.b)));
+
+    } else {
+      printf("NOT ALGEBRAIC\n");
+    }
 
     lp_assignment_set_value(asg, next_var, &(all_test_points[i]));
 
