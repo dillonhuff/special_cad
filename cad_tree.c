@@ -340,6 +340,14 @@ void lift_polynomials(cad_cell* root,
       lp_dyadic_interval_print(&it, stdout);
       printf("\n");
 
+      if (all_test_points[i].value.a.f == 0) {
+	printf("f == 0\n");
+      } else {
+	printf("f = ");
+	lp_upolynomial_print(all_test_points[i].value.a.f, stdout);
+	printf("\n");
+      }
+
       assert(dyadic_rational_is_normalized(&(it.a)));
       assert(dyadic_rational_is_normalized(&(it.b)));
 
