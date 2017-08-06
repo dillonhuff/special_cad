@@ -12,6 +12,10 @@ int dyadic_rational_is_normalized(const lp_dyadic_rational_t* q) {
   return (mpz_sgn(&q->a) == 0 && q->n == 0) || (mpz_scan1(&q->a, 0) == 0 || q->n == 0);
 }
 
+// I think this is the origin of the non-normalized <3*x^2 + (-1*x) + (-1), (3/4, 1)>
+
+// Non-normalized: <3*x^2 + (-1*x) + (-1), (-11529223823181087261/1024, -1729386645466579267/1024)>
+
 void print_dyadic_info(lp_dyadic_rational_t const * q) {
   printf("integer = ");
   lp_integer_print(&(q->a), stdout);

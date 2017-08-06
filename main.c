@@ -1011,14 +1011,42 @@ void test_algebraic_number_copy() {
 
 }
 
+// I think this is the origin of the non-normalized <3*x^2 + (-1*x) + (-1), (3/4, 1)>
+
+// Non-normalized: <3*x^2 + (-1*x) + (-1), (-11529223823181087261/1024, -1729386645466579267/1024)>
+
+void test_algebraic_number_refinement() {
+  lp_upolynomial_t* x2 = lp_upolynomial_construct_power(lp_Z, 2, 3);
+  lp_upolynomial_t* mx = lp_upolynomial_construct_power(lp_Z, 1, -1);
+  lp_upolynomial_t* mone = lp_upolynomial_construct_power(lp_Z, 0, -1);
+
+  lp_upolynomial_t* poly1 = lp_upolynomial_add(x2, mx);
+  lp_upolynomial_t* poly = lp_upolynomial_add(poly1, mone);
+  size_t deg = lp_upolynomial_degree(poly);
+
+  lp_upolynomial_print(poly, stdout);
+  printf("\n");
+
+  /* printf("Degree of poly = %zu\n", deg); */
+
+  /* lp_upolynomial_print(poly, stdout); */
+  /* printf("\n"); */
+
+  /* lp_algebraic_number_t* roots = */
+  /*   (lp_algebraic_number_t*)(malloc(sizeof(lp_algebraic_number_t)*deg)); */
+
+  
+}
+
 int main() {
-  test_algebraic_number_copy();
-  test_mccallum_projection_only_resultants();
-  isolate_multivariate_roots();
-  test_all_coefficients();
-  test_all_discriminants();
-  test_conic_sections();
-  test_constant_conic_sections();
+  test_algebraic_number_refinement();
+  /* test_algebraic_number_copy(); */
+  /* test_mccallum_projection_only_resultants(); */
+  /* isolate_multivariate_roots(); */
+  /* test_all_coefficients(); */
+  /* test_all_discriminants(); */
+  /* test_conic_sections(); */
+  /* test_constant_conic_sections(); */
 
   /* for (int i = 0; i < 100; i++) { */
     
