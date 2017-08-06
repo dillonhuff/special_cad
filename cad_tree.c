@@ -311,6 +311,10 @@ lp_value_t* test_points(size_t* num_test_points_ptr,
     lp_value_t current = all_roots[i];
     lp_value_t next = all_roots[i + 1];
 
+    printf("next value = ");
+    lp_value_print(&next, stdout);
+    printf("\n");
+
     /* assert(is_algebraic(current)); */
     /* assert(is_algebraic(next)); */
 

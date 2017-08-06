@@ -1012,9 +1012,12 @@ void test_algebraic_number_copy() {
 }
 
 // Actually I think it is this: <3*x^2 + (-1*x) + (-1), (-445/1024, -889/2048)>
+// Next value = <61*x^2 + 8*x + (-8), (-889/2048, -111/256)>
 // Non-normalized: <3*x^2 + (-1*x) + (-1), (-11529223823181087261/1024, -1729386645466579267/1024)>
 
+
 void test_algebraic_number_refinement() {
+  // Constructing first value
   lp_upolynomial_t* x2 = lp_upolynomial_construct_power(lp_Z, 2, 3);
   lp_upolynomial_t* mx = lp_upolynomial_construct_power(lp_Z, 1, -1);
   lp_upolynomial_t* mone = lp_upolynomial_construct_power(lp_Z, 0, -1);
@@ -1044,12 +1047,59 @@ void test_algebraic_number_refinement() {
   lp_algebraic_number_print(&algnum, stdout);
   printf("\n");
 
-  for (size_t i = 0; i < 20; i++) {
-    lp_algebraic_number_refine(&algnum);
+  // Constructing next value
+  // Next value = <61*x^2 + 8*x + (-8), (-889/2048, -111/256)>
+  lp_upolynomial_t* x2_2 = lp_upolynomial_construct_power(lp_Z, 2, 61);
+  lp_upolynomial_t* mx_2 = lp_upolynomial_construct_power(lp_Z, 1, 8);
+  lp_upolynomial_t* mone_2 = lp_upolynomial_construct_power(lp_Z, 0, -8);
 
-    lp_algebraic_number_print(&algnum, stdout);
-    printf("\n");
-  }
+  lp_upolynomial_t* poly1_2 = lp_upolynomial_add(x2_2, mx_2);
+  lp_upolynomial_t* poly_2 = lp_upolynomial_add(poly1_2, mone_2);
+
+  lp_upolynomial_print(poly_2, stdout);
+  printf("\n");
+
+  lp_dyadic_rational_t num_2;
+  lp_dyadic_rational_construct_from_int(&num_2, -889, 11);
+
+  lp_dyadic_rational_t denum_2;
+  lp_dyadic_rational_construct_from_int(&denum_2, -111, 8);
+
+  lp_dyadic_interval_t it_2;
+  lp_dyadic_interval_construct(&it_2, &num_2, 1, &denum_2, 1);
+
+  lp_dyadic_interval_print(&it, stdout);
+  printf("\n");
+
+  lp_algebraic_number_t algnum_2;
+  lp_algebraic_number_construct(&algnum_2, poly_2, &it_2);
+
+  lp_algebraic_number_print(&algnum_2, stdout);
+  printf("\n");
+
+
+  lp_value_t val_1;
+  lp_value_construct(&val_1, LP_VALUE_ALGEBRAIC, &algnum);
+
+  lp_value_t val_2;
+  lp_value_construct(&val_2, LP_VALUE_ALGEBRAIC, &algnum_2);
+
+  printf("Constructing fresh value");
+
+  lp_value_t val;
+  lp_value_construct_none(&val);
+  lp_value_get_value_between(&val_1, 1, &val_2, 1, &val);
+
+  printf("val_1 after call\n");
+  lp_value_print(&val_1, stdout);
+  printf("\n");
+  
+  /* for (size_t i = 0; i < 20; i++) { */
+  /*   lp_algebraic_number_refine(&algnum); */
+
+  /*   lp_algebraic_number_print(&algnum, stdout); */
+  /*   printf("\n"); */
+  /* } */
   
   /* printf("Degree of poly = %zu\n", deg); */
 
@@ -1064,17 +1114,17 @@ void test_algebraic_number_refinement() {
 
 int main() {
   test_algebraic_number_refinement();
-  test_algebraic_number_copy();
-  test_mccallum_projection_only_resultants();
-  isolate_multivariate_roots();
-  test_all_coefficients();
-  test_all_discriminants();
-  test_conic_sections();
-  test_constant_conic_sections();
+  /* test_algebraic_number_copy(); */
+  /* test_mccallum_projection_only_resultants(); */
+  /* isolate_multivariate_roots(); */
+  /* test_all_coefficients(); */
+  /* test_all_discriminants(); */
+  /* test_conic_sections(); */
+  /* test_constant_conic_sections(); */
 
-  for (int i = 0; i < 100; i++) {
+  /* for (int i = 0; i < 100; i++) { */
     
-    test_all_discriminants();
-  }
+  /*   test_all_discriminants(); */
+  /* } */
 
 }
