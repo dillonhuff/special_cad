@@ -980,6 +980,133 @@ void test_constant_conic_sections() {
 
 }
 
+void test_constant_conic_sections_unlifted() {
+  lp_variable_db_t* var_db = lp_variable_db_new();
+
+  lp_variable_t x = lp_variable_db_new_variable(var_db, "x");
+  lp_variable_t y = lp_variable_db_new_variable(var_db, "y");
+  
+  // Create variable order
+  lp_variable_order_t* var_order = lp_variable_order_new();
+
+  lp_variable_order_push(var_order, x);  
+  lp_variable_order_push(var_order, y);
+  
+  lp_polynomial_context_t* ctx =
+    lp_polynomial_context_new(lp_Z, var_db, var_order);
+
+  printf("Specific polynomials\n");
+
+  lp_integer_t* conic_1_coeffs =
+    (lp_integer_t*) malloc(sizeof(lp_integer_t)*6);
+  conic_1_coeffs[0] = mk_int(1);
+  conic_1_coeffs[1] = mk_int(2);
+  conic_1_coeffs[2] = mk_int(3);
+  conic_1_coeffs[3] = mk_int(4);
+  conic_1_coeffs[4] = mk_int(5);
+  conic_1_coeffs[5] = mk_int(6);
+
+  pl c1 =
+    build_int_coeff_conic_section(ctx, var_db, var_order, conic_1_coeffs, x, y);
+
+  printf("conic section 1 = ");
+  print_poly(c1);
+  printf("\n");
+
+  lp_integer_t* conic_2_coeffs =
+    (lp_integer_t*) malloc(sizeof(lp_integer_t)*6);
+  conic_2_coeffs[0] = mk_int(-3);
+  conic_2_coeffs[1] = mk_int(5);
+  conic_2_coeffs[2] = mk_int(3);
+  conic_2_coeffs[3] = mk_int(1);
+  conic_2_coeffs[4] = mk_int(2);
+  conic_2_coeffs[5] = mk_int(1);
+
+  pl c2 =
+    build_int_coeff_conic_section(ctx, var_db, var_order, conic_2_coeffs, x, y);
+
+  printf("conic section 2 = ");
+  print_poly(c2);
+  printf("\n");
+
+  lp_polynomial_t** cs =
+    (lp_polynomial_t**) malloc(sizeof(pl)*2);
+  cs[0] = c1;
+  cs[1] = c2;
+
+  clock_t start, end;
+  double cpu_time_used;
+
+  start = clock();
+
+  size_t projection_set_size = 0;
+  pl_list mc_proj1 =
+    mccallum_projection(&projection_set_size, cs, 2);
+
+  end = clock();
+  cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;  
+  
+  printf("Projection set\n");
+  print_poly_list(mc_proj1, projection_set_size);
+
+  printf("---------- Time to compute generalized projection = %f\n", cpu_time_used);
+
+  // Projection polynomials to be lifted
+
+  size_t num_projection_sets = 2;
+
+  projection_set* projection_sets =
+    (projection_set*)(malloc(sizeof(projection_set)*2));
+  projection_sets[0] = make_projection_set(mc_proj1, projection_set_size);
+  projection_sets[1] = make_projection_set(cs, 2);
+
+  printf("about to compute roots\n");
+  fflush(stdout);
+
+  lp_assignment_t* asg = lp_assignment_new(var_db);
+  
+  size_t num_roots = 0;
+  lp_value_t* all_roots =
+    all_sorted_roots(&num_roots, asg, mc_proj1, projection_set_size);
+
+  printf("# of roots = %zu\n", num_roots);
+
+  printf("Checking roots for normalization\n");
+  for (size_t i = 0; i < num_roots; i++) {
+    if (is_algebraic(all_roots[i])) {
+      check_normalized(&(all_roots[i].value.a));
+    }
+  }
+
+  printf("All roots are normalized\n");
+
+  size_t num_test_points = 0;
+  lp_value_t* all_test_points =
+    test_points(&num_test_points, all_roots, num_roots);
+
+  printf("# of test points = %zu\n", num_test_points);
+  
+  /* // Initial empty assignment */
+  /* lp_assignment_t* asg = lp_assignment_new(var_db); */
+
+  /* // Create the root of the CAD tree */
+  /* cad_cell root = make_cad_cell(NULL, 0, NULL); */
+
+  /* // Actually call CAD lifting */
+  /* lift_polynomials(&root, projection_sets, num_projection_sets, asg); */
+
+  /* printf("Final CAD tree\n"); */
+  /* print_cad_tree(&root); */
+
+  /* lp_assignment_destruct(asg); */
+  
+  lp_polynomial_context_detach(ctx);
+
+  free(conic_1_coeffs);
+  free(conic_2_coeffs);
+
+}
+
 void test_algebraic_number_copy() {
 
   lp_dyadic_rational_t d_one;
@@ -1113,14 +1240,15 @@ void test_algebraic_number_refinement() {
 }
 
 int main() {
-  test_algebraic_number_refinement();
+  //test_algebraic_number_refinement();
   /* test_algebraic_number_copy(); */
   /* test_mccallum_projection_only_resultants(); */
   /* isolate_multivariate_roots(); */
   /* test_all_coefficients(); */
   /* test_all_discriminants(); */
   /* test_conic_sections(); */
-  /* test_constant_conic_sections(); */
+  //test_constant_conic_sections();
+  test_constant_conic_sections_unlifted();
 
   /* for (int i = 0; i < 100; i++) { */
     
