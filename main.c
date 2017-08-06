@@ -518,7 +518,6 @@ void test_all_discriminants() {
   lp_variable_order_push(var_order, x2);
   lp_variable_order_push(var_order, x3);
 
-
   lp_polynomial_context_t* ctx =
     lp_polynomial_context_new(lp_Z, var_db, var_order);
   
@@ -652,6 +651,85 @@ void test_all_discriminants() {
   assert(total_num_cells == 44);
   free(all_test_points);
   lp_assignment_destruct(asg);
+}
+
+void test_mccallum_projection() {
+  lpint two = mk_int(2);
+  lpint one = mk_int(1);
+
+  lp_variable_db_t* var_db = lp_variable_db_new();
+
+  // Create variables
+  lp_variable_t x1 = lp_variable_db_new_variable(var_db, "x1");
+  lp_variable_t x2 = lp_variable_db_new_variable(var_db, "x2");
+  lp_variable_t x3 = lp_variable_db_new_variable(var_db, "x3");
+
+  // Create variable order
+  lp_variable_order_t* var_order = lp_variable_order_new();
+  lp_variable_order_push(var_order, x1);  
+  lp_variable_order_push(var_order, x2);
+  lp_variable_order_push(var_order, x3);
+
+  lp_polynomial_context_t* ctx =
+    lp_polynomial_context_new(lp_Z, var_db, var_order);
+  
+  pl x1m2sq = lp_polynomial_new(ctx);
+  lp_polynomial_construct_simple(x1m2sq, ctx, &one, x1, 1);
+
+  pl twop = lp_polynomial_new(ctx);
+  lp_polynomial_construct_simple(twop, ctx, &two, x1, 0);
+
+  lp_polynomial_sub(x1m2sq, x1m2sq, twop);
+  lp_polynomial_mul(x1m2sq, x1m2sq, x1m2sq);
+
+  lp_polynomial_print(x1m2sq, stdout);
+  printf("\n");
+
+  pl x2m2sq = lp_polynomial_new(ctx);
+  lp_polynomial_construct_simple(x2m2sq, ctx, &one, x2, 1);
+
+  lp_polynomial_sub(x2m2sq, x2m2sq, twop);
+  lp_polynomial_mul(x2m2sq, x2m2sq, x2m2sq);
+
+  lp_polynomial_print(x2m2sq, stdout);
+  printf("\n");
+
+  pl x3m2sq = lp_polynomial_new(ctx);
+  lp_polynomial_construct_simple(x3m2sq, ctx, &one, x3, 1);
+
+  lp_polynomial_sub(x3m2sq, x3m2sq, twop);
+  lp_polynomial_mul(x3m2sq, x3m2sq, x3m2sq);
+
+  lp_polynomial_print(x3m2sq, stdout);
+  printf("\n");
+
+  pl onep = lp_polynomial_new(ctx);
+  lp_polynomial_construct_simple(onep, ctx, &one, x1, 0);
+  
+  pl p = lp_polynomial_new(ctx);
+  lp_polynomial_add(p, p, x1m2sq);
+  lp_polynomial_add(p, p, x2m2sq);
+  lp_polynomial_add(p, p, x3m2sq);
+  lp_polynomial_sub(p, p, onep);
+
+  lp_polynomial_print(p, stdout);
+  printf("\n");
+
+  size_t proj1_size = 0;
+  pl_list mc_proj1 = mccallum_projection(&proj1_size, &p, 1);
+
+  assert(proj1_size == 2);
+
+  printf("McCallum projections\n");
+  print_poly_list(mc_proj1, proj1_size);
+
+  /* size_t proj2_size = 0; */
+  /* pl_list mc_proj2 = mccallum_projection(&proj2_size, mc_proj1, proj1_size); */
+
+  /* printf("McCallum projection 2\n"); */
+  /* print_poly_list(mc_proj2, proj2_size); */
+
+  /* assert(proj2_size == 3); */
 }
 
 void test_conic_sections() {
@@ -794,10 +872,14 @@ void test_constant_conic_sections() {
 }
 
 int main() {
-  isolate_multivariate_roots();
-  test_all_coefficients();
-  test_all_discriminants();
-  test_conic_sections();
+  //isolate_multivariate_roots();
+  //test_all_coefficients();
+  // test_all_discriminants();
+  //test_conic_sections();
   //test_constant_conic_sections();
+
+  for (int i = 0; i < 1000; i++) {
+    test_mccallum_projection();
+  }
 
 }
