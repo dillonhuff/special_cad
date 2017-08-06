@@ -369,21 +369,21 @@ pl_list all_pairwise_resultants(size_t* num_resultants,
 
   pl_list resultants = poly_ptr_list(*num_resultants);
 
-  /* size_t total_res = 0; */
-  /* for (size_t i = 0; i < ps_len; i++) { */
-  /*   pl f = ps[i]; */
+  size_t total_res = 0;
+  for (size_t i = 0; i < ps_len; i++) {
+    pl f = ps[i];
 
-  /*   for (size_t j = i + 1; j < ps_len; j++) { */
-  /*     pl g = ps[j]; */
+    for (size_t j = i + 1; j < ps_len; j++) {
+      pl g = ps[j];
 
-  /*     pl res = pl_new(lp_polynomial_get_context(g)); */
-  /*     lp_polynomial_resultant(res, f, g); */
-  /*     resultants[total_res] = res; */
-  /*     total_res++; */
-  /*   } */
-  /* } */
+      pl res = pl_new(lp_polynomial_get_context(g));
+      lp_polynomial_resultant(res, f, g);
+      resultants[total_res] = res;
+      total_res++;
+    }
+  }
 
-  /* assert(total_res == *num_resultants); */
+  assert(total_res == *num_resultants);
 
   return resultants;
 }
@@ -728,7 +728,8 @@ void test_mccallum_projection_only_resultants() {
     all_pairwise_resultants(&resultants_size, mc_proj1, proj1_size);
 
   printf("McCallum projection 2\n");
-  //print_poly_list(resultants, resultants_size);
+  printf("# of resultants = %zu\n", resultants_size);
+  print_poly_list(resultants, resultants_size);
 
   lp_integer_destruct(&one);
   lp_integer_destruct(&two);
@@ -739,11 +740,11 @@ void test_mccallum_projection_only_resultants() {
 
   free(mc_proj1);
 
-  for (size_t i = 0; i < resultants_size; i++) {
-    lp_polynomial_destruct(resultants[i]);
-  }
+  /* for (size_t i = 0; i < resultants_size; i++) { */
+  /*   lp_polynomial_destruct(resultants[i]); */
+  /* } */
   
-  free(resultants);
+  /* free(resultants); */
 }
 
 void test_mccallum_projection() {
@@ -987,7 +988,8 @@ int main() {
   //test_constant_conic_sections();
 
   for (int i = 0; i < 100; i++) {
-    test_mccallum_projection_only_resultants();
+    //test_mccallum_projection_only_resultants();
+    test_all_discriminants();
   }
 
 }
