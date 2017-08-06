@@ -392,8 +392,9 @@ void lift_polynomials(cad_cell* root,
 
   for (size_t i = 0; i < num_test_points; i++) {
 
-    assert(all_test_points[i].type == LP_VALUE_ALGEBRAIC);
-    lp_algebraic_number_print(&(all_test_points[i].value.a), stdout);
+    //assert(all_test_points[i].type == LP_VALUE_ALGEBRAIC);
+    //lp_algebraic_number_print(&(all_test_points[i].value.a), stdout);
+    lp_value_print(&(all_test_points[i]), stdout);
     printf("\n");
 
 
@@ -424,11 +425,12 @@ void print_cad_tree_rec(const size_t level, cad_cell* root) {
     tab_out(level);
     printf("ROOT\n");
   } else {
-    assert(is_algebraic(*(root->value)));
+    //assert(is_algebraic(*(root->value)));
 
     tab_out(level);
     printf("CELL VALUE = ");
-    lp_algebraic_number_print(&((root->value)->value.a), stdout);
+    //lp_algebraic_number_print(&((root->value)->value.a), stdout);
+    lp_value_print(root->value, stdout);
     printf("\n");
   }
 
