@@ -792,6 +792,6 @@ int main() {
   test_all_coefficients();
   test_all_discriminants();
   test_conic_sections();
-  test_constant_conic_sections();
+  //test_constant_conic_sections();
 
 }
