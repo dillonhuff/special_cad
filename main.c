@@ -1053,29 +1053,121 @@ void test_constant_conic_sections_unlifted() {
 
   printf("# of roots = %zu\n", num_roots);
 
-  lp_value_t current = all_roots[1];
-  lp_value_t next = all_roots[2];
+  assert(num_roots > 0);
 
-  printf("checking root normalization of\n");
-  printf("current = ");
-  lp_value_print(&current, stdout);
-  printf("\n");
-  printf("next = ");
-  lp_value_print(&current, stdout);
-  printf("\n");
+  size_t num_test_points = 0;
+  size_t* num_test_points_ptr = &num_test_points;
 
-  if (is_algebraic(current)) {
-    check_normalized(&(current.value.a));
+  *num_test_points_ptr = 2*num_roots + 1;
+
+  lp_value_t* test_points =
+    (lp_value_t*)(malloc(sizeof(lp_value_t)*(*num_test_points_ptr)));
+
+  lp_value_t neg_inf;
+  lp_value_construct(&neg_inf, LP_VALUE_MINUS_INFINITY, NULL);
+
+  lp_value_construct_none(&(test_points[0]));
+  lp_value_get_value_between(&neg_inf, 1, &(all_roots[0]), 1, &(test_points[0]));
+
+  printf("Checking first point normalization\n");
+
+  if (is_algebraic(test_points[0])) {
+    check_normalized(&(test_points[0].value.a));
   }
+  
+  size_t index = 1;
+  for (size_t i = 0; i < num_roots - 1; i++) {
+    test_points[index] = all_roots[i / 2];
+    index++;
 
-  lp_value_t btwn;
-  lp_value_construct_none(&btwn);
-  lp_value_get_value_between(&current, 1, &next, 1, &btwn);
+    // Construct midpoint
+    lp_value_t current = all_roots[i];
+    lp_value_t next = all_roots[i + 1];
 
-  if (is_algebraic(current)) {
-    check_normalized(&(current.value.a));;
-  }
+    printf("next value = ");
+    lp_value_print(&next, stdout);
+    printf("\n");
+
+    /* assert(is_algebraic(current)); */
+    /* assert(is_algebraic(next)); */
+
+    printf("checking root normalization of\n");
+    printf("current = ");
+    lp_value_print(&current, stdout);
+    printf("\n");
+    printf("next = ");
+    lp_value_print(&current, stdout);
+    printf("\n");
+
+    printf("checking root %zu for normalization before between value call\n", i);
+    if (is_algebraic(all_roots[i])) {
+      check_normalized(&(all_roots[i].value.a));
+    }
     
+    lp_value_construct_none(&(test_points[index]));
+    lp_value_get_value_between(&current, 1, &next, 1, &(test_points[index]));
+
+    printf("checking root %zu for normalization after between value\n", i);
+    if (is_algebraic(all_roots[i])) {
+      check_normalized(&(all_roots[i].value.a));
+    }
+    
+    printf("checking midpoint %zu for normalization\n", index);
+    if (is_algebraic(test_points[index])) {
+      check_normalized(&(test_points[index].value.a));
+    }
+    
+    index++;
+  }
+
+  test_points[*num_test_points_ptr - 2] = all_roots[num_roots - 1];
+
+  lp_value_t pos_inf;
+  lp_value_construct(&pos_inf, LP_VALUE_PLUS_INFINITY, NULL);
+
+  lp_value_construct_none(&(test_points[*num_test_points_ptr - 1]));
+  lp_value_get_value_between(&(all_roots[num_roots - 1]), 1, &pos_inf, 1, &(test_points[*num_test_points_ptr - 1]));
+
+  printf("checking positive endpoint %zu for normalization\n", index);
+  if (is_algebraic(test_points[*num_test_points_ptr - 1])) {
+    check_normalized(&(test_points[*num_test_points_ptr - 1].value.a));
+  }
+  
+  printf("Testing all test points for normalization\n");
+
+  // Check that all points are normalized
+  for (size_t i = 0; i < *num_test_points_ptr; i++) {
+
+    if (is_algebraic(test_points[i])) {
+      printf("Checking %zu for normalization\n", i);
+      check_normalized(&(test_points[i].value.a));
+    }
+  }
+  
+  /* lp_value_t current = all_roots[1]; */
+  /* lp_value_t next = all_roots[2]; */
+
+  /* printf("checking root normalization of\n"); */
+  /* printf("current = "); */
+  /* lp_value_print(&current, stdout); */
+  /* printf("\n"); */
+  /* printf("next = "); */
+  /* lp_value_print(&current, stdout); */
+  /* printf("\n"); */
+
+  /* if (is_algebraic(current)) { */
+  /*   check_normalized(&(current.value.a)); */
+  /* } */
+
+  /* lp_value_t btwn; */
+  /* lp_value_construct_none(&btwn); */
+  /* lp_value_get_value_between(&current, 1, &next, 1, &btwn); */
+
+  /* if (is_algebraic(current)) { */
+  /*   check_normalized(&(current.value.a));; */
+  /* } */
+
+  // Start of normal code
   /* printf("Checking roots for normalization\n"); */
   /* for (size_t i = 0; i < num_roots; i++) { */
   /*   if (is_algebraic(all_roots[i])) { */
