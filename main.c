@@ -1339,7 +1339,7 @@ void test_3D_projection() {
   // Ellipsoid center
   lp_variable_t E = lp_variable_db_new_variable(var_db, "E");
   lp_variable_t F = lp_variable_db_new_variable(var_db, "F");
-  lp_variable_t G = lp_variable_db_new_variable(var_db, "E");
+  lp_variable_t G = lp_variable_db_new_variable(var_db, "G");
 
   // Ellipsoid axis lengths
   lp_variable_t H = lp_variable_db_new_variable(var_db, "H");
@@ -1354,6 +1354,14 @@ void test_3D_projection() {
   lp_variable_order_push(var_order, C);
   lp_variable_order_push(var_order, D);
 
+  lp_variable_order_push(var_order, E);
+  lp_variable_order_push(var_order, F);
+  lp_variable_order_push(var_order, G);
+
+  lp_variable_order_push(var_order, H);
+  lp_variable_order_push(var_order, K);
+  lp_variable_order_push(var_order, L);
+  
   lp_variable_order_push(var_order, x);  
   lp_variable_order_push(var_order, y);
   lp_variable_order_push(var_order, z);
@@ -1378,7 +1386,35 @@ void test_3D_projection() {
   print_poly(ellipsoid_poly);
   printf("\n");
 
+  clock_t start, end;
+  double cpu_time_used;
+     
+  start = clock();
+
+  pl_list cs = poly_ptr_list(2);
+  cs[0] = plane_poly;
+  cs[1] = ellipsoid_poly;
+
+  size_t projection_set_size = 0;
+  pl_list mc_proj1 =
+    mccallum_projection(&projection_set_size, cs, 2);
+
+  end = clock();
+  cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;  
+  
+  printf("Projection set\n");
+  print_poly_list(mc_proj1, projection_set_size);
+
+  printf("---------- Time to compute generalized projection = %f\n", cpu_time_used);
+
+  for (size_t i = 0; i < projection_set_size; i++) {
+    lp_polynomial_delete(mc_proj1[i]);
+  }
+  free(mc_proj1);
+  free(cs);
+  
   pl_delete(plane_poly);
+  pl_delete(ellipsoid_poly);
 
   lp_polynomial_context_detach(ctx);
 }

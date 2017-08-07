@@ -314,13 +314,111 @@ pl make_ellipsoid_polynomial(const lp_polynomial_context_t* ctx,
 			     const lp_variable_t x,
 			     const lp_variable_t y,
 			     const lp_variable_t z,
+			     // Center point
 			     const lp_variable_t E,
 			     const lp_variable_t F,
 			     const lp_variable_t G,
+			     // Axis lengths
 			     const lp_variable_t H,
 			     const lp_variable_t K,
 			     const lp_variable_t L) {
   pl ellipsoid = pl_new(ctx);
 
+  pl x_term = pl_simple_new(ctx, 1, x, 1);
+  pl y_term = pl_simple_new(ctx, 1, y, 1);
+  pl z_term = pl_simple_new(ctx, 1, z, 1);
+
+  pl e_term = pl_simple_new(ctx, 1, E, 1);
+  pl f_term = pl_simple_new(ctx, 1, F, 1);
+  pl g_term = pl_simple_new(ctx, 1, G, 1);
+
+  pl h_term = pl_simple_new(ctx, 1, H, 1);
+  pl k_term = pl_simple_new(ctx, 1, K, 1);
+  pl l_term = pl_simple_new(ctx, 1, L, 1);
+
+  pl h2 = pl_new(ctx);
+  lp_polynomial_mul(h2, h_term, h_term);
+
+  pl k2 = pl_new(ctx);
+  lp_polynomial_mul(k2, k_term, k_term);
+
+  pl l2 = pl_new(ctx);
+  lp_polynomial_mul(l2, l_term, l_term);
+
+  pl xe = pl_new(ctx);
+  lp_polynomial_sub(xe, x_term, e_term);
+  pl xe2 = pl_new(ctx);
+  lp_polynomial_mul(xe2, xe, xe);
+
+  pl_delete(xe);
+
+  pl xe2kl = pl_new(ctx);
+  lp_polynomial_add(xe2kl, xe2kl, xe2);
+  lp_polynomial_mul(xe2kl, xe2kl, k2);
+  lp_polynomial_mul(xe2kl, xe2kl, l2);
+
+  pl_delete(xe2);
+
+  lp_polynomial_add(ellipsoid, ellipsoid, xe2kl);
+
+  pl yf = pl_new(ctx);
+  lp_polynomial_sub(yf, y_term, f_term);
+  pl yf2 = pl_new(ctx);
+  lp_polynomial_mul(yf2, yf, yf);
+
+  pl_delete(yf);
+
+  pl yf2hl = pl_new(ctx);
+  lp_polynomial_add(yf2hl, yf2hl, yf2);
+  lp_polynomial_mul(yf2hl, yf2hl, h2);
+  lp_polynomial_mul(yf2hl, yf2hl, l2);
+  
+  lp_polynomial_add(ellipsoid, ellipsoid, yf2hl);
+
+  pl zg = pl_new(ctx);
+  lp_polynomial_sub(zg, z_term, g_term);
+  pl zg2 = pl_new(ctx);
+  lp_polynomial_mul(zg2, zg, zg);
+
+  pl_delete(zg);
+
+  pl zg2hk = pl_new(ctx);
+  lp_polynomial_add(zg2hk, zg2hk, zg2);
+  lp_polynomial_mul(zg2hk, zg2hk, h2);
+  lp_polynomial_mul(zg2hk, zg2hk, l2);
+  
+  lp_polynomial_add(ellipsoid, ellipsoid, zg2hk);
+
+  // Subtract h2 k2 l2
+
+  pl hkl2 = pl_new(ctx);
+  lp_polynomial_add(hkl2, hkl2, h2);
+  lp_polynomial_mul(hkl2, hkl2, k2);
+  lp_polynomial_mul(hkl2, hkl2, l2);
+
+  lp_polynomial_sub(ellipsoid, ellipsoid, hkl2);
+
+  pl_delete(hkl2);
+
+  pl_delete(xe2kl);
+  pl_delete(yf2hl);
+  pl_delete(zg2hk);
+
+  pl_delete(h2);
+  pl_delete(k2);
+  pl_delete(l2);
+  
+  pl_delete(x_term);
+  pl_delete(y_term);
+  pl_delete(z_term);
+
+  pl_delete(e_term);
+  pl_delete(f_term);
+  pl_delete(g_term);
+  
+  pl_delete(h_term);
+  pl_delete(k_term);
+  pl_delete(l_term);
+  
   return ellipsoid;
 }
