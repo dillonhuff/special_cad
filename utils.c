@@ -25,3 +25,16 @@ void free_list(void** list, const size_t len) {
 
   free(list);
 }
+
+lp_polynomial_t** poly_ptr_list(const size_t len) {
+  return (lp_polynomial_t**)(malloc(sizeof(lp_polynomial_t*)*len));
+}
+
+void print_poly_list(lp_polynomial_t * const * const ps,
+		     const size_t len) {
+  for (size_t i = 0; i < len; i++) {
+    lp_polynomial_print(ps[i], stdout);
+    printf("\n");
+  }
+}
+

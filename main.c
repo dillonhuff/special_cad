@@ -15,18 +15,6 @@
 #include "cad_tree.h"
 #include "polynomial_examples.h"
 
-lp_polynomial_t** poly_ptr_list(const size_t len) {
-  return (lp_polynomial_t**)(malloc(sizeof(lp_polynomial_t*)*len));
-}
-
-void print_poly_list(lp_polynomial_t * const * const ps,
-		     const size_t len) {
-  for (size_t i = 0; i < len; i++) {
-    lp_polynomial_print(ps[i], stdout);
-    printf("\n");
-  }
-}
-
 void coefficients(lp_polynomial_t** coefficients,
 		  const lp_polynomial_t* p) {
   for (size_t k = 0; k <= lp_polynomial_degree(p); k++) {
@@ -1333,16 +1321,43 @@ void test_algebraic_number_refinement() {
   
 }
 
+void test_3D_projection() {
+
+  lp_variable_db_t* var_db = lp_variable_db_new();
+
+  lp_variable_t x = lp_variable_db_new_variable(var_db, "x");
+  lp_variable_t y = lp_variable_db_new_variable(var_db, "y");
+  
+  // Create variable order
+  lp_variable_order_t* var_order = lp_variable_order_new();
+
+  lp_variable_order_push(var_order, x);  
+  lp_variable_order_push(var_order, y);
+  
+  lp_polynomial_context_t* ctx =
+    lp_polynomial_context_new(lp_Z, var_db, var_order);
+
+  pl plane_poly = make_plane_polynomial(ctx, var_db, var_order);
+
+  print_poly(plane_poly);
+  printf("\n");
+
+  lp_polynomial_delete(plane_poly);
+
+  lp_polynomial_context_detach(ctx);
+}
+
 int main() {
-  test_algebraic_number_refinement();
-  test_algebraic_number_copy();
-  test_mccallum_projection_only_resultants();
-  isolate_multivariate_roots();
-  test_all_coefficients();
-  test_all_discriminants();
-  test_conic_sections();
-  test_constant_conic_sections();
-  test_constant_conic_sections_unlifted();
+  /* test_algebraic_number_refinement(); */
+  /* test_algebraic_number_copy(); */
+  /* test_mccallum_projection_only_resultants(); */
+  /* isolate_multivariate_roots(); */
+  /* test_all_coefficients(); */
+  /* test_all_discriminants(); */
+  /* test_conic_sections(); */
+  /* test_constant_conic_sections(); */
+  /* test_constant_conic_sections_unlifted(); */
+  test_3D_projection();
 
   /* for (int i = 0; i < 100; i++) { */
     

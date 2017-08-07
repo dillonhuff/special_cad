@@ -550,10 +550,6 @@ size_t count_cells(cad_cell const * root) {
 
 void cad_tree_destruct(cad_cell* cell) {
   if (cell->value) {
-    printf("value to destroy = ");
-    lp_value_print(cell->value, stdout);
-    printf("\n");
-
     lp_value_destruct(cell->value);
   }
 
