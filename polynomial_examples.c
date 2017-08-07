@@ -233,21 +233,6 @@ lp_polynomial_t** build_2_conic_sections(const lp_polynomial_context_t* ctx,
   
 }
 
-pl pl_simple_new(const lp_polynomial_context_t* ctx,
-		 const size_t a,
-		 const lp_variable_t x,
-		 const long power) {
-  pl p = pl_new(ctx);
-
-  lpint it = mk_int(a);
-
-  lp_polynomial_construct_simple(p, ctx, &it, x, power);
-
-  lp_integer_destruct(&it);
-  
-  return p;
-}
-
 pl make_plane_polynomial(const lp_polynomial_context_t* ctx,
 			 lp_variable_db_t* var_db,
 			 lp_variable_order_t* var_order,

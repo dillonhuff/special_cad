@@ -19,3 +19,8 @@ lp_polynomial_t** poly_ptr_list(const size_t len);
 
 void print_poly_list(lp_polynomial_t * const * const ps,
 		     const size_t len);
+
+pl pl_simple_new(const lp_polynomial_context_t* ctx,
+		 const size_t a,
+		 const lp_variable_t x,
+		 const long power);

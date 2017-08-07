@@ -328,10 +328,18 @@ void test_all_coefficients() {
 void discriminant(lp_polynomial_t* disc, lp_polynomial_t* p) {
   pl deriv = pl_new(lp_polynomial_get_context(p));
   lp_polynomial_derivative(deriv, p);
+
   printf("deriv = ");
   lp_polynomial_print(deriv, stdout);
   printf("\n");
-  lp_polynomial_resultant(disc, p, deriv);
+
+  if (lp_polynomial_top_variable(deriv) ==
+      lp_polynomial_top_variable(p)) {
+    lp_polynomial_resultant(disc, p, deriv);
+  } {
+    printf("NULL discriminant\n");
+    disc = NULL;
+  }
 }
 
 // Returns an array of length ps_len.
@@ -1419,6 +1427,39 @@ void test_3D_projection() {
   lp_polynomial_context_detach(ctx);
 }
 
+void test_constant_discriminant() {
+
+  lp_variable_db_t* var_db = lp_variable_db_new();
+
+  lp_variable_t x = lp_variable_db_new_variable(var_db, "x");
+
+  // Plane parameters
+  lp_variable_t C = lp_variable_db_new_variable(var_db, "C");
+
+  lp_variable_order_t* var_order = lp_variable_order_new();
+  lp_variable_order_push(var_order, C);
+  lp_variable_order_push(var_order, x);
+
+  lp_polynomial_context_t* ctx =
+    lp_polynomial_context_new(lp_Z, var_db, var_order);
+
+  pl c_term = pl_simple_new(ctx, 1, C, 1);
+  pl x_term = pl_simple_new(ctx, 1, x, 1);
+
+  pl cx = pl_new(ctx);
+  lp_polynomial_mul(cx, c_term, x_term);
+
+  pl disc = pl_new(ctx);
+  discriminant(disc, cx);
+
+  pl_delete(c_term);
+  pl_delete(x_term);
+  pl_delete(cx);
+
+  lp_polynomial_context_detach(ctx);
+
+}
+
 int main() {
   /* test_algebraic_number_refinement(); */
   /* test_algebraic_number_copy(); */
@@ -1429,6 +1470,7 @@ int main() {
   /* test_conic_sections(); */
   /* test_constant_conic_sections(); */
   /* test_constant_conic_sections_unlifted(); */
+  test_constant_discriminant();
   test_3D_projection();
 
   /* for (int i = 0; i < 100; i++) { */

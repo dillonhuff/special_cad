@@ -42,3 +42,19 @@ void print_poly_list(lp_polynomial_t * const * const ps,
 void pl_delete(pl p) {
   lp_polynomial_delete(p);
 }
+
+pl pl_simple_new(const lp_polynomial_context_t* ctx,
+		 const size_t a,
+		 const lp_variable_t x,
+		 const long power) {
+  pl p = pl_new(ctx);
+
+  lpint it = mk_int(a);
+
+  lp_polynomial_construct_simple(p, ctx, &it, x, power);
+
+  lp_integer_destruct(&it);
+  
+  return p;
+}
+
