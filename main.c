@@ -380,11 +380,6 @@ pl_list all_pairwise_resultants(size_t* num_resultants,
 	resultants[total_res] = res;
 	total_res++;      
       }
-      /* else { */
-      /* 	printf("NULL resultant\n"); */
-      /* 	resultants[total_res] = NULL; */
-      /* } */
-
     }
   }
 
