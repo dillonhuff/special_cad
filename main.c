@@ -660,6 +660,7 @@ void test_all_discriminants() {
     lp_value_destruct(&(all_test_points[i]));
   }
   free(all_test_points);
+
   lp_assignment_destruct(asg);
 }
 
@@ -988,6 +989,7 @@ void test_constant_conic_sections() {
   printf("Final CAD tree\n");
   print_cad_tree(&root);
 
+  cad_tree_destruct(&root);
   lp_assignment_destruct(asg);
 
   free(mc_proj1);

@@ -100,7 +100,14 @@ cad_cell make_cad_cell(cad_cell* parent,
   c.parent = parent;
   c.children = (cad_cell*)(malloc(sizeof(cad_cell)*num_children));
   c.num_children = num_children;
-  c.value = value;
+
+  if (value != NULL) {
+    c.value = (lp_value_t*) malloc(sizeof(lp_value_t));
+    lp_value_construct_none(c.value);
+    lp_value_construct_copy(c.value, value);
+  } else {
+    c.value = NULL;
+  }
 
   return c;
 }
@@ -460,8 +467,6 @@ void lift_polynomials(cad_cell* root,
       }
 
       check_normalized(&(all_test_points[i].value.a));
-      /* assert(dyadic_rational_is_normalized(&(it.a))); */
-      /* assert(dyadic_rational_is_normalized(&(it.b))); */
 
     } else {
       printf("NOT ALGEBRAIC\n");
@@ -478,6 +483,11 @@ void lift_polynomials(cad_cell* root,
 
   root->children = children;
   root->num_children = num_test_points;
+
+  for (size_t i = 0; i < num_test_points; i++) {
+    lp_value_destruct(&(all_test_points[i]));
+  }
+  free(all_test_points);
   
 }
 
@@ -525,4 +535,22 @@ size_t count_cells(cad_cell const * root) {
     ncells += count_cells(&(root->children[i]));
   }
   return ncells;
+}
+
+void cad_tree_destruct(cad_cell* cell) {
+  if (cell->value) {
+    printf("value to destroy = ");
+    lp_value_print(cell->value, stdout);
+    printf("\n");
+
+    lp_value_destruct(cell->value);
+  }
+
+  for (size_t i = 0; i < cell->num_children; i++) {
+    cad_tree_destruct(&(cell->children[i]));
+  }
+
+  if (cell->children) {
+    free(cell->children);
+  }
 }
