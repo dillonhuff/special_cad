@@ -437,6 +437,8 @@ pl_list mccallum_projection(size_t* projection_set_size,
       non_constant_coeffs[*projection_set_size] = coeffs[i];
       *projection_set_size += 1;
       
+    } else {
+      lp_polynomial_delete(coeffs[i]);
     }
   }
 
@@ -455,6 +457,8 @@ pl_list mccallum_projection(size_t* projection_set_size,
     if (!lp_polynomial_is_constant(discs[i])) {
       non_constant_coeffs[*projection_set_size] = discs[i];
       *projection_set_size += 1;
+    } else {
+      lp_polynomial_delete(discs[i]);
     }
   }
 
@@ -482,6 +486,8 @@ pl_list mccallum_projection(size_t* projection_set_size,
     if (!lp_polynomial_is_constant(resultants[i])) {
       non_constant_coeffs[*projection_set_size] = resultants[i];
       *projection_set_size += 1;
+    } else {
+      lp_polynomial_delete(resultants[i]);
     }
   }
 
@@ -649,6 +655,10 @@ void test_all_discriminants() {
   printf("total # of cells in tree = %zu\n", total_num_cells);
 
   assert(total_num_cells == 44);
+
+  for (size_t i = 0; i < num_test_points; i++) {
+    lp_value_destruct(&(all_test_points[i]));
+  }
   free(all_test_points);
   lp_assignment_destruct(asg);
 }
@@ -973,7 +983,7 @@ void test_constant_conic_sections() {
   end = clock();
   cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;  
 
-  printf("---------- Time to lift specific case = %f\n", cpu_time_used);  
+  printf("---------- Time to lift specific case = %f\n", cpu_time_used);
 
   printf("Final CAD tree\n");
   print_cad_tree(&root);
