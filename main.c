@@ -361,9 +361,10 @@ pl_list all_discriminants(lp_polynomial_t* const * const ps,
 pl_list all_pairwise_resultants(size_t* num_resultants,
 				lp_polynomial_t * const * const ps,
 				const size_t ps_len) {
-  *num_resultants = (ps_len*(ps_len - 1)) / 2;
+  *num_resultants = 0; //(ps_len*(ps_len - 1)) / 2;
 
-  pl_list resultants = poly_ptr_list(*num_resultants);
+  size_t max_resultants = (ps_len*(ps_len - 1)) / 2;
+  pl_list resultants = poly_ptr_list(max_resultants);
 
   size_t total_res = 0;
   for (size_t i = 0; i < ps_len; i++) {
@@ -372,14 +373,28 @@ pl_list all_pairwise_resultants(size_t* num_resultants,
     for (size_t j = i + 1; j < ps_len; j++) {
       pl g = ps[j];
 
-      pl res = pl_new(lp_polynomial_get_context(g));
-      lp_polynomial_resultant(res, f, g);
-      resultants[total_res] = res;
-      total_res++;
+      if (lp_polynomial_top_variable(f) ==
+	  lp_polynomial_top_variable(g)) {
+	pl res = pl_new(lp_polynomial_get_context(g));
+	lp_polynomial_resultant(res, f, g);
+	resultants[total_res] = res;
+	total_res++;      
+      }
+      /* else { */
+      /* 	printf("NULL resultant\n"); */
+      /* 	resultants[total_res] = NULL; */
+      /* } */
+
     }
   }
 
-  assert(total_res == *num_resultants);
+  printf("Total resultants = %zu\n", total_res);
+  *num_resultants = total_res;
+
+  resultants =
+    (pl_list) realloc(resultants, sizeof(pl) * total_res);
+
+  assert(total_res <= *num_resultants);
 
   return resultants;
 }
