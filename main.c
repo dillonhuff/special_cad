@@ -1413,8 +1413,27 @@ void test_3D_projection() {
   printf("Projection set\n");
   print_poly_list(mc_proj1, projection_set_size);
 
-  printf("---------- Time to compute generalized projection = %f\n", cpu_time_used);
+  printf("---------- Time to compute generalized projection 1 = %f\n", cpu_time_used);
 
+  start = clock();
+  
+  size_t projection_set_size_2 = 0;
+  pl_list mc_proj2 =
+    mccallum_projection(&projection_set_size_2, mc_proj1, projection_set_size);
+
+  end = clock();
+  cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;  
+  
+  printf("Projection set\n");
+  print_poly_list(mc_proj2, projection_set_size_2);
+
+  printf("---------- Time to compute generalized projection 2 = %f\n", cpu_time_used);
+
+  for (size_t i = 0; i < projection_set_size_2; i++) {
+    lp_polynomial_delete(mc_proj2[i]);
+  }
+  free(mc_proj2);
+  
   for (size_t i = 0; i < projection_set_size; i++) {
     lp_polynomial_delete(mc_proj1[i]);
   }
