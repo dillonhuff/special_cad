@@ -1446,6 +1446,80 @@ void test_3D_projection() {
 
   printf("---------- Time to compute generalized projection 2 = %f\n", cpu_time_used);
 
+  size_t num_projection_sets = 3;
+  projection_set* projection_sets =
+    (projection_set*)(malloc(sizeof(projection_set)*2));
+  projection_sets[0] = make_projection_set(mc_proj2, projection_set_size_2);
+  projection_sets[1] = make_projection_set(mc_proj1, projection_set_size);  
+  projection_sets[2] = make_projection_set(cs, 2);
+
+  // Initial empty assignment
+  lp_assignment_t* asg = lp_assignment_new(var_db);
+  lpint a_i = mk_int(1);
+  lp_value_t a_value;
+  lp_value_construct(&a_value, LP_VALUE_INTEGER, &a_i);
+
+  lp_assignment_set_value(asg, A, &a_value);
+
+  lpint b_i = mk_int(1);
+  lp_value_t b_value;
+  lp_value_construct(&b_value, LP_VALUE_INTEGER, &b_i);
+  
+  lp_assignment_set_value(asg, B, &b_value);
+
+  lpint c_i = mk_int(1);
+  lp_value_t c_value;
+  lp_value_construct(&c_value, LP_VALUE_INTEGER, &c_i);
+  
+  lp_assignment_set_value(asg, C, &c_value);
+
+  lpint d_i = mk_int(1);
+  lp_value_t d_value;
+  lp_value_construct(&d_value, LP_VALUE_INTEGER, &d_i);
+  
+  lp_assignment_set_value(asg, D, &d_value);
+  
+  lp_integer_destruct(&a_i);
+  lp_integer_destruct(&b_i);
+  lp_integer_destruct(&c_i);
+  lp_integer_destruct(&d_i);
+
+  /* // Plane parameters */
+  /* lp_variable_t A = lp_variable_db_new_variable(var_db, "A"); */
+  /* lp_variable_t B = lp_variable_db_new_variable(var_db, "B"); */
+  /* lp_variable_t C = lp_variable_db_new_variable(var_db, "C"); */
+  /* lp_variable_t D = lp_variable_db_new_variable(var_db, "D"); */
+
+  /* // Ellipsoid center */
+  /* lp_variable_t E = lp_variable_db_new_variable(var_db, "E"); */
+  /* lp_variable_t F = lp_variable_db_new_variable(var_db, "F"); */
+  /* lp_variable_t G = lp_variable_db_new_variable(var_db, "G"); */
+
+  /* // Ellipsoid axis lengths */
+  /* lp_variable_t H = lp_variable_db_new_variable(var_db, "H"); */
+  /* lp_variable_t K = lp_variable_db_new_variable(var_db, "K"); */
+  /* lp_variable_t L = lp_variable_db_new_variable(var_db, "L"); */
+  
+
+  // Create the root of the CAD tree
+  cad_cell root = make_cad_cell(NULL, 0, NULL);
+
+  start = clock();
+  
+  // Actually call CAD lifting
+  lift_polynomials(&root, projection_sets, num_projection_sets, asg);
+  
+  end = clock();
+  cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;  
+
+  printf("---------- Time to lift generalized case = %f\n", cpu_time_used);
+
+  printf("Final CAD tree\n");
+  print_cad_tree(&root);
+
+  cad_tree_destruct(&root);
+  lp_assignment_destruct(asg);
+  
   for (size_t i = 0; i < projection_set_size_2; i++) {
     lp_polynomial_delete(mc_proj2[i]);
   }
