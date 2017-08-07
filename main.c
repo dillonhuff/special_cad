@@ -748,7 +748,7 @@ void test_mccallum_projection_only_resultants() {
   lp_integer_destruct(&two);
 
   for (size_t i = 0; i < proj1_size; i++) {
-    lp_polynomial_destruct(mc_proj1[i]);
+    lp_polynomial_delete(mc_proj1[i]);
   }
 
   free(mc_proj1);
@@ -842,13 +842,13 @@ void test_mccallum_projection() {
   lp_integer_destruct(&two);
 
   for (size_t i = 0; i < proj1_size; i++) {
-    lp_polynomial_destruct(mc_proj1[i]);
+    lp_polynomial_delete(mc_proj1[i]);
   }
 
   free(mc_proj1);
 
   for (size_t i = 0; i < proj2_size; i++) {
-    lp_polynomial_destruct(mc_proj2[i]);
+    lp_polynomial_delete(mc_proj2[i]);
   }
   
   free(mc_proj2);
@@ -888,6 +888,11 @@ void test_conic_sections() {
   print_poly_list(mc_proj1, projection_set_size);
 
   printf("---------- Time to compute generalized projection = %f\n", cpu_time_used);
+
+  for (size_t i = 0; i < projection_set_size; i++) {
+    lp_polynomial_delete(mc_proj1[i]);
+  }
+  free(mc_proj1);
 
   lp_polynomial_context_detach(ctx);
 }
@@ -994,7 +999,14 @@ void test_constant_conic_sections() {
   cad_tree_destruct(&root);
   lp_assignment_destruct(asg);
 
+  for (size_t i = 0; i < projection_set_size; i++) {
+    lp_polynomial_delete(mc_proj1[i]);
+  }
   free(mc_proj1);
+
+
+  lp_polynomial_delete(cs[0]);
+  lp_polynomial_delete(cs[1]);
   free(cs);
 
   free(projection_sets);
