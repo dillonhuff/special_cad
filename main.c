@@ -979,6 +979,11 @@ void test_constant_conic_sections() {
   print_cad_tree(&root);
 
   lp_assignment_destruct(asg);
+
+  free(mc_proj1);
+  free(cs);
+
+  free(projection_sets);
   
   lp_polynomial_context_detach(ctx);
 
