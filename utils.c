@@ -58,3 +58,15 @@ pl pl_simple_new(const lp_polynomial_context_t* ctx,
   return p;
 }
 
+
+void set_integer_value(lp_assignment_t* asg, const lp_variable_t x, const int i) {
+  lpint d_i = mk_int(i);
+  lp_value_t d_value;
+  lp_value_construct(&d_value, LP_VALUE_INTEGER, &d_i);
+
+  lp_assignment_set_value(asg, x, &d_value);
+
+  /* lp_integer_destruct(&d_i); */
+  /* lp_value_destruct(&d_value); */
+  
+}

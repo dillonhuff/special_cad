@@ -24,3 +24,5 @@ pl pl_simple_new(const lp_polynomial_context_t* ctx,
 		 const size_t a,
 		 const lp_variable_t x,
 		 const long power);
+
+void set_integer_value(lp_assignment_t* asg, const lp_variable_t x, const int i);

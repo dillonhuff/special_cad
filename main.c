@@ -523,6 +523,31 @@ pl_list mccallum_projection(size_t* projection_set_size,
   return no_duplicates;
 }
 
+pl_list
+filter_projection_polynomials(size_t* filtered_size_ptr,
+			      pl_list original_projection,
+			      const size_t original_size,
+			      lp_variable_t x) {
+  pl_list filtered =
+    poly_ptr_list(original_size);
+
+  size_t filtered_size = 0;
+
+  for (size_t i = 0; i < original_size; i++) {
+    if (lp_polynomial_top_variable(original_projection[i]) == x) {
+      filtered[filtered_size] = original_projection[i];
+      filtered_size++;
+    }
+  }
+
+  *filtered_size_ptr = filtered_size;
+
+  filtered =
+    (pl_list) realloc(filtered, sizeof(pl) * filtered_size);
+
+  return filtered;
+}
+
 void test_all_discriminants() {
   lpint two = mk_int(2);
   lpint one = mk_int(1);
@@ -1438,6 +1463,24 @@ void test_3D_projection() {
   pl_list mc_proj2 =
     mccallum_projection(&projection_set_size_2, mc_proj1, projection_set_size);
 
+  // Remove polynomials from the projection set that are constant wrt the
+  // existentially quantified variables
+
+  size_t projection_set_size_2_filtered;
+  pl_list mc_proj2_filtered =
+    filter_projection_polynomials(&projection_set_size_2_filtered,
+				  mc_proj2,
+				  projection_set_size_2,
+				  x);
+
+  size_t projection_set_size_filtered;
+  pl_list mc_proj1_filtered =
+    filter_projection_polynomials(&projection_set_size_filtered,
+				  mc_proj1,
+				  projection_set_size,
+				  y);
+  
+
   end = clock();
   cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;  
   
@@ -1449,8 +1492,10 @@ void test_3D_projection() {
   size_t num_projection_sets = 3;
   projection_set* projection_sets =
     (projection_set*)(malloc(sizeof(projection_set)*2));
-  projection_sets[0] = make_projection_set(mc_proj2, projection_set_size_2);
-  projection_sets[1] = make_projection_set(mc_proj1, projection_set_size);  
+  projection_sets[0] =
+    make_projection_set(mc_proj2_filtered, projection_set_size_2_filtered);
+  projection_sets[1] =
+    make_projection_set(mc_proj1_filtered, projection_set_size_filtered);
   projection_sets[2] = make_projection_set(cs, 2);
 
   // Initial empty assignment
@@ -1478,6 +1523,13 @@ void test_3D_projection() {
   lp_value_construct(&d_value, LP_VALUE_INTEGER, &d_i);
   
   lp_assignment_set_value(asg, D, &d_value);
+
+  set_integer_value(asg, E, 1);
+  set_integer_value(asg, F, 1);
+  set_integer_value(asg, G, 1);
+  set_integer_value(asg, H, 1);
+  set_integer_value(asg, K, 1);
+  set_integer_value(asg, L, 1);
   
   lp_integer_destruct(&a_i);
   lp_integer_destruct(&b_i);
@@ -1519,6 +1571,9 @@ void test_3D_projection() {
 
   cad_tree_destruct(&root);
   lp_assignment_destruct(asg);
+
+  free(mc_proj2_filtered);
+  free(mc_proj1_filtered);
   
   for (size_t i = 0; i < projection_set_size_2; i++) {
     lp_polynomial_delete(mc_proj2[i]);
