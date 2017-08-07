@@ -656,6 +656,8 @@ void test_all_discriminants() {
 
   assert(total_num_cells == 44);
 
+  cad_tree_destruct(&root);
+
   for (size_t i = 0; i < num_test_points; i++) {
     lp_value_destruct(&(all_test_points[i]));
   }

@@ -303,6 +303,8 @@ lp_value_t* test_points(size_t* num_test_points_ptr,
   lp_value_construct_none(&(test_points[0]));
   lp_value_get_value_between(&neg_inf, 1, &(all_roots[0]), 1, &(test_points[0]));
 
+  lp_value_destruct(&neg_inf);
+
   printf("Checking first point normalization\n");
 
   if (is_algebraic(test_points[0])) {
@@ -335,23 +337,26 @@ lp_value_t* test_points(size_t* num_test_points_ptr,
     lp_value_print(&current, stdout);
     printf("\n");
 
-    printf("checking root %zu for normalization before between value call\n", i);
-    if (is_algebraic(all_roots[i])) {
-      check_normalized(&(all_roots[i].value.a));
-    }
+    /* printf("checking root %zu for normalization before between value call\n", i); */
+    /* if (is_algebraic(all_roots[i])) { */
+    /*   check_normalized(&(all_roots[i].value.a)); */
+    /* } */
     
     lp_value_construct_none(&(test_points[index]));
     lp_value_get_value_between(&current, 1, &next, 1, &(test_points[index]));
 
-    printf("checking root %zu for normalization after between value\n", i);
-    if (is_algebraic(all_roots[i])) {
-      check_normalized(&(all_roots[i].value.a));
-    }
+    lp_value_destruct(&current);
+    lp_value_destruct(&next);
+
+    /* printf("checking root %zu for normalization after between value\n", i); */
+    /* if (is_algebraic(all_roots[i])) { */
+    /*   check_normalized(&(all_roots[i].value.a)); */
+    /* } */
     
-    printf("checking midpoint %zu for normalization\n", index);
-    if (is_algebraic(test_points[index])) {
-      check_normalized(&(test_points[index].value.a));
-    }
+    /* printf("checking midpoint %zu for normalization\n", index); */
+    /* if (is_algebraic(test_points[index])) { */
+    /*   check_normalized(&(test_points[index].value.a)); */
+    /* } */
     
     index++;
   }
@@ -364,10 +369,12 @@ lp_value_t* test_points(size_t* num_test_points_ptr,
   lp_value_construct_none(&(test_points[*num_test_points_ptr - 1]));
   lp_value_get_value_between(&(all_roots[num_roots - 1]), 1, &pos_inf, 1, &(test_points[*num_test_points_ptr - 1]));
 
-  printf("checking positive endpoint %zu for normalization\n", index);
-  if (is_algebraic(test_points[*num_test_points_ptr - 1])) {
-    check_normalized(&(test_points[*num_test_points_ptr - 1].value.a));
-  }
+  lp_value_destruct(&pos_inf);
+
+  /* printf("checking positive endpoint %zu for normalization\n", index); */
+  /* if (is_algebraic(test_points[*num_test_points_ptr - 1])) { */
+  /*   check_normalized(&(test_points[*num_test_points_ptr - 1].value.a)); */
+  /* } */
   
   printf("Testing all test points for normalization\n");
 
@@ -446,31 +453,31 @@ void lift_polynomials(cad_cell* root,
     // TODO: Actuall construct new cells
     children[i] = make_cad_cell(root, 0, &(all_test_points[i]));
 
-    printf("lp value type = %u\n", all_test_points[i].type);
-    printf("lp value = ");
-    lp_value_print(&(all_test_points[i]), stdout);
-    printf("\n");
+    /* printf("lp value type = %u\n", all_test_points[i].type); */
+    /* printf("lp value = "); */
+    /* lp_value_print(&(all_test_points[i]), stdout); */
+    /* printf("\n"); */
 
-    if (is_algebraic(all_test_points[i])) {
-      printf("IS ALGEBRAIC\n");
-      lp_dyadic_interval_t it = all_test_points[i].value.a.I;
-      printf("Interval = ");
-      lp_dyadic_interval_print(&it, stdout);
-      printf("\n");
+    /* if (is_algebraic(all_test_points[i])) { */
+    /*   printf("IS ALGEBRAIC\n"); */
+    /*   lp_dyadic_interval_t it = all_test_points[i].value.a.I; */
+    /*   printf("Interval = "); */
+    /*   lp_dyadic_interval_print(&it, stdout); */
+    /*   printf("\n"); */
 
-      if (all_test_points[i].value.a.f == 0) {
-	printf("f == 0\n");
-      } else {
-	printf("f = ");
-	lp_upolynomial_print(all_test_points[i].value.a.f, stdout);
-	printf("\n");
-      }
+    /*   if (all_test_points[i].value.a.f == 0) { */
+    /* 	printf("f == 0\n"); */
+    /*   } else { */
+    /* 	printf("f = "); */
+    /* 	lp_upolynomial_print(all_test_points[i].value.a.f, stdout); */
+    /* 	printf("\n"); */
+    /*   } */
 
-      check_normalized(&(all_test_points[i].value.a));
+    /*   check_normalized(&(all_test_points[i].value.a)); */
 
-    } else {
-      printf("NOT ALGEBRAIC\n");
-    }
+    /* } else { */
+    /*   printf("NOT ALGEBRAIC\n"); */
+    /* } */
 
     lp_assignment_set_value(asg, next_var, &(all_test_points[i]));
 
@@ -484,10 +491,14 @@ void lift_polynomials(cad_cell* root,
   root->children = children;
   root->num_children = num_test_points;
 
-  for (size_t i = 0; i < num_test_points; i++) {
-    lp_value_destruct(&(all_test_points[i]));
-  }
+  /* for (size_t i = 0; i < num_test_points; i++) { */
+  /*   lp_value_destruct(&(all_test_points[i])); */
+  /* } */
   free(all_test_points);
+
+  if (all_roots) {
+    free(all_roots);
+  }
   
 }
 
