@@ -18,4 +18,7 @@ build_int_coeff_conic_section(const lp_polynomial_context_t* ctx,
 
 pl make_plane_polynomial(const lp_polynomial_context_t* ctx,
 			 lp_variable_db_t* var_db,
-			 lp_variable_order_t* var_order);
+			 lp_variable_order_t* var_order,
+			 const lp_variable_t x,
+			 const lp_variable_t y,
+			 const lp_variable_t z);

@@ -233,10 +233,57 @@ lp_polynomial_t** build_2_conic_sections(const lp_polynomial_context_t* ctx,
   
 }
 
+pl pl_simple_new(const lp_polynomial_context_t* ctx,
+		 const size_t a,
+		 const lp_variable_t x,
+		 const long power) {
+  pl p = pl_new(ctx);
+
+  lpint it = mk_int(a);
+
+  lp_polynomial_construct_simple(p, ctx, &it, x, power);
+
+  lp_integer_destruct(&it);
+  
+  return p;
+}
+
 pl make_plane_polynomial(const lp_polynomial_context_t* ctx,
 			 lp_variable_db_t* var_db,
-			 lp_variable_order_t* var_order) {
+			 lp_variable_order_t* var_order,
+			 const lp_variable_t x,
+			 const lp_variable_t y,
+			 const lp_variable_t z) {
   pl plane = pl_new(ctx);
+
+  
+  lp_variable_t A = lp_variable_db_new_variable(var_db, "A");
+  lp_variable_t B = lp_variable_db_new_variable(var_db, "B");
+  lp_variable_t C = lp_variable_db_new_variable(var_db, "C");
+  lp_variable_t D = lp_variable_db_new_variable(var_db, "D");
+  
+  lp_variable_order_push(var_order, A);
+  lp_variable_order_push(var_order, B);
+  lp_variable_order_push(var_order, C);
+  lp_variable_order_push(var_order, D);
+
+  lp_variable_order_push(var_order, x);  
+  lp_variable_order_push(var_order, y);
+  lp_variable_order_push(var_order, z);
+  
+  pl x_term = pl_simple_new(ctx, 1, x, 1);
+  pl a_term = pl_simple_new(ctx, 1, A, 1);
+
+  pl ax = pl_new(ctx);
+
+  lp_polynomial_mul(ax, a_term, x_term);
+
+  lp_polynomial_add(plane, plane, ax);
+  
+
+  pl_delete(ax);
+  pl_delete(x_term);
+  pl_delete(a_term);
 
   return plane;
 }

@@ -38,3 +38,7 @@ void print_poly_list(lp_polynomial_t * const * const ps,
   }
 }
 
+
+void pl_delete(pl p) {
+  lp_polynomial_delete(p);
+}

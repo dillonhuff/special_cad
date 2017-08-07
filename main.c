@@ -1327,17 +1327,15 @@ void test_3D_projection() {
 
   lp_variable_t x = lp_variable_db_new_variable(var_db, "x");
   lp_variable_t y = lp_variable_db_new_variable(var_db, "y");
+  lp_variable_t z = lp_variable_db_new_variable(var_db, "z");
   
   // Create variable order
   lp_variable_order_t* var_order = lp_variable_order_new();
-
-  lp_variable_order_push(var_order, x);  
-  lp_variable_order_push(var_order, y);
   
   lp_polynomial_context_t* ctx =
     lp_polynomial_context_new(lp_Z, var_db, var_order);
 
-  pl plane_poly = make_plane_polynomial(ctx, var_db, var_order);
+  pl plane_poly = make_plane_polynomial(ctx, var_db, var_order, x, y, z);
 
   print_poly(plane_poly);
   printf("\n");
