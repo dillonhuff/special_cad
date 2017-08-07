@@ -343,16 +343,22 @@ void discriminant(lp_polynomial_t* disc, lp_polynomial_t* p) {
 }
 
 // Returns an array of length ps_len.
-pl_list all_discriminants(lp_polynomial_t* const * const ps,
+pl_list all_discriminants(size_t* num_discs_ptr,
+			  lp_polynomial_t* const * const ps,
 			  const size_t ps_len) {
+  *num_discs_ptr = 0;
   pl_list p = poly_ptr_list(ps_len);
 
   for (size_t i = 0; i < ps_len; i++) {
     pl disc = pl_new(lp_polynomial_get_context(ps[i]));
 
     discriminant(disc, ps[i]);
-    
-    p[i] = disc;
+
+    if (disc != NULL) {
+      p[i] = disc;
+      *num_discs_ptr += 1;
+    }
+
   }
   
   return p;
@@ -457,12 +463,13 @@ pl_list mccallum_projection(size_t* projection_set_size,
   free(coeffs);
 
   // Add discriminants
-  pl_list discs = all_discriminants(ps, ps_len);
+  size_t num_discs = 0;
+  pl_list discs = all_discriminants(&num_discs, ps, ps_len);
 
   non_constant_coeffs =
     (pl_list)(realloc(non_constant_coeffs, sizeof(pl)*(*projection_set_size + ps_len)));
 
-  for (size_t i = 0; i < ps_len; i++) {
+  for (size_t i = 0; i < num_discs; i++) {
     if (!lp_polynomial_is_constant(discs[i])) {
       non_constant_coeffs[*projection_set_size] = discs[i];
       *projection_set_size += 1;
@@ -1490,15 +1497,15 @@ void test_constant_discriminant() {
 }
 
 int main() {
-  /* test_algebraic_number_refinement(); */
-  /* test_algebraic_number_copy(); */
-  /* test_mccallum_projection_only_resultants(); */
-  /* isolate_multivariate_roots(); */
-  /* test_all_coefficients(); */
-  /* test_all_discriminants(); */
-  /* test_conic_sections(); */
-  /* test_constant_conic_sections(); */
-  /* test_constant_conic_sections_unlifted(); */
+  test_algebraic_number_refinement();
+  test_algebraic_number_copy();
+  test_mccallum_projection_only_resultants();
+  isolate_multivariate_roots();
+  test_all_coefficients();
+  test_all_discriminants();
+  test_conic_sections();
+  test_constant_conic_sections();
+  test_constant_conic_sections_unlifted();
   test_constant_discriminant();
   test_3D_projection();
 
