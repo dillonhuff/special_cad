@@ -1323,24 +1323,62 @@ void test_algebraic_number_refinement() {
 
 void test_3D_projection() {
 
+  // Create variables
   lp_variable_db_t* var_db = lp_variable_db_new();
 
   lp_variable_t x = lp_variable_db_new_variable(var_db, "x");
   lp_variable_t y = lp_variable_db_new_variable(var_db, "y");
   lp_variable_t z = lp_variable_db_new_variable(var_db, "z");
-  
+
+  // Plane parameters
+  lp_variable_t A = lp_variable_db_new_variable(var_db, "A");
+  lp_variable_t B = lp_variable_db_new_variable(var_db, "B");
+  lp_variable_t C = lp_variable_db_new_variable(var_db, "C");
+  lp_variable_t D = lp_variable_db_new_variable(var_db, "D");
+
+  // Ellipsoid center
+  lp_variable_t E = lp_variable_db_new_variable(var_db, "E");
+  lp_variable_t F = lp_variable_db_new_variable(var_db, "F");
+  lp_variable_t G = lp_variable_db_new_variable(var_db, "E");
+
+  // Ellipsoid axis lengths
+  lp_variable_t H = lp_variable_db_new_variable(var_db, "H");
+  lp_variable_t K = lp_variable_db_new_variable(var_db, "K");
+  lp_variable_t L = lp_variable_db_new_variable(var_db, "L");
+
   // Create variable order
   lp_variable_order_t* var_order = lp_variable_order_new();
+
+  lp_variable_order_push(var_order, A);
+  lp_variable_order_push(var_order, B);
+  lp_variable_order_push(var_order, C);
+  lp_variable_order_push(var_order, D);
+
+  lp_variable_order_push(var_order, x);  
+  lp_variable_order_push(var_order, y);
+  lp_variable_order_push(var_order, z);
+  
   
   lp_polynomial_context_t* ctx =
     lp_polynomial_context_new(lp_Z, var_db, var_order);
 
-  pl plane_poly = make_plane_polynomial(ctx, var_db, var_order, x, y, z);
+  pl plane_poly = make_plane_polynomial(ctx, var_db, var_order,
+					x, y, z,
+					A, B, C, D);
 
   print_poly(plane_poly);
   printf("\n");
 
-  lp_polynomial_delete(plane_poly);
+
+  pl ellipsoid_poly = make_ellipsoid_polynomial(ctx,
+  						x, y, z,
+						E, F, G,
+						H, K, L);
+
+  print_poly(ellipsoid_poly);
+  printf("\n");
+
+  pl_delete(plane_poly);
 
   lp_polynomial_context_detach(ctx);
 }

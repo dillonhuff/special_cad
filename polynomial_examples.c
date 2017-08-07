@@ -253,37 +253,74 @@ pl make_plane_polynomial(const lp_polynomial_context_t* ctx,
 			 lp_variable_order_t* var_order,
 			 const lp_variable_t x,
 			 const lp_variable_t y,
-			 const lp_variable_t z) {
+			 const lp_variable_t z,
+			 const lp_variable_t A,
+			 const lp_variable_t B,
+			 const lp_variable_t C,
+			 const lp_variable_t D) {
   pl plane = pl_new(ctx);
 
   
-  lp_variable_t A = lp_variable_db_new_variable(var_db, "A");
-  lp_variable_t B = lp_variable_db_new_variable(var_db, "B");
-  lp_variable_t C = lp_variable_db_new_variable(var_db, "C");
-  lp_variable_t D = lp_variable_db_new_variable(var_db, "D");
-  
-  lp_variable_order_push(var_order, A);
-  lp_variable_order_push(var_order, B);
-  lp_variable_order_push(var_order, C);
-  lp_variable_order_push(var_order, D);
-
-  lp_variable_order_push(var_order, x);  
-  lp_variable_order_push(var_order, y);
-  lp_variable_order_push(var_order, z);
-  
   pl x_term = pl_simple_new(ctx, 1, x, 1);
+  pl y_term = pl_simple_new(ctx, 1, y, 1);
+  pl z_term = pl_simple_new(ctx, 1, z, 1);
+  
   pl a_term = pl_simple_new(ctx, 1, A, 1);
 
   pl ax = pl_new(ctx);
 
   lp_polynomial_mul(ax, a_term, x_term);
 
+
   lp_polynomial_add(plane, plane, ax);
-  
+
+  pl b_term = pl_simple_new(ctx, 1, B, 1);
+
+  pl bx = pl_new(ctx);
+
+  lp_polynomial_mul(bx, b_term, y_term);
+
+  lp_polynomial_add(plane, plane, bx);
+
+  pl c_term = pl_simple_new(ctx, 1, C, 1);
+
+  pl cx = pl_new(ctx);
+
+  lp_polynomial_mul(cx, c_term, z_term);
+
+  lp_polynomial_add(plane, plane, cx);
+
+  pl d_term = pl_simple_new(ctx, 1, D, 1);
+
+  lp_polynomial_add(plane, plane, d_term);
 
   pl_delete(ax);
-  pl_delete(x_term);
-  pl_delete(a_term);
+  pl_delete(bx);
+  pl_delete(cx);
 
+  pl_delete(a_term);
+  pl_delete(b_term);
+  pl_delete(c_term);
+  pl_delete(d_term);
+
+  pl_delete(x_term);
+  pl_delete(y_term);
+  pl_delete(z_term);
+  
   return plane;
+}
+
+pl make_ellipsoid_polynomial(const lp_polynomial_context_t* ctx,
+			     const lp_variable_t x,
+			     const lp_variable_t y,
+			     const lp_variable_t z,
+			     const lp_variable_t E,
+			     const lp_variable_t F,
+			     const lp_variable_t G,
+			     const lp_variable_t H,
+			     const lp_variable_t K,
+			     const lp_variable_t L) {
+  pl ellipsoid = pl_new(ctx);
+
+  return ellipsoid;
 }
