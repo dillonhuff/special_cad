@@ -397,8 +397,9 @@ int is_duplicate(pl p, lp_polynomial_t* const * const ps, const size_t ps_len) {
   return 0;
 }
 
+// Note: frees elements in the original list that are not copied!
 pl_list remove_duplicates(size_t* no_duplicates_size_ptr,
-			  lp_polynomial_t* const * const ps,
+			  lp_polynomial_t** ps,
 			  const size_t ps_len) {
   pl_list nds = poly_ptr_list(ps_len);
 
@@ -411,6 +412,8 @@ pl_list remove_duplicates(size_t* no_duplicates_size_ptr,
       nds[*no_duplicates_size_ptr] = ps[i];
       *no_duplicates_size_ptr += 1;
       
+    } else {
+      lp_polynomial_delete(ps[i]);
     }
   }
 
